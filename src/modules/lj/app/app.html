@@ -1,9 +1,15 @@
 <template lwc:render-mode="light">
     <header class="site-header">
         <div class="site-header__inner">
-            <a class="site-header__mark" href="/" aria-label={ui.homeLinkLabel}
-                >{profile.knownAs}</a
-            >
+            <!-- Empty alt: the link's aria-label already names it -->
+            <a class="site-header__mark" href="/" aria-label={ui.homeLinkLabel}>
+                <img
+                    src="/assets/logo/logo-mark.svg"
+                    alt=""
+                    width="36"
+                    height="40"
+                />
+            </a>
             <nav class="site-header__nav" aria-label={ui.navLabel}>
                 <template for:each={ui.nav} for:item="item">
                     <a key={item.href} href={item.href}>{item.label}</a>
@@ -53,7 +59,15 @@
     </main>
 
     <footer class="site-footer">
-        <div class="section__inner">
+        <div class="section__inner site-footer__inner">
+            <!-- Decorative: the footer text already names Liam Jeong -->
+            <img
+                class="site-footer__mark"
+                src="/assets/logo/logo-mark-dark.svg"
+                alt=""
+                width="27"
+                height="30"
+            />
             <p>
                 {ui.footer.text}&#32;
                 <a href={ui.footer.sourceUrl}>{ui.footer.sourceLabel}</a>.

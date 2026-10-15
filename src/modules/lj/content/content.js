@@ -12,11 +12,8 @@ export const profile = {
     knownAs: 'LJ',
     role: 'Salesforce Architect',
     location: 'Dallas–Fort Worth, Texas',
-    // DRAFT: positioning line. One sentence, specific, no adjectives you can't prove.
-    headline:
-        'I design Salesforce for work that has to hold up under audit, scale, and real users.',
-    // DRAFT
-    intro: 'Agentforce on GovCloud, OmniStudio and Revenue Cloud quoting, and the integrations and release pipelines that keep them running. Architect by role, developer by habit.',
+    headline: 'An architect who still writes the Apex.',
+    intro: 'I design and build Salesforce for public-sector and regulated work: Agentforce on GovCloud, OmniStudio and Revenue Cloud, and the integrations and deployment pipelines underneath.',
     availability: 'Open to architect and lead developer roles.',
     links: {
         github: 'https://github.com/ArchLiam',
@@ -28,7 +25,7 @@ export const profile = {
 
 // Interface copy: navigation, section headings, labels, and link text.
 export const ui = {
-    // Starts with the visible "LJ" so voice-control users can say what they see.
+    // Starts with "LJ", the letters in the logo, so voice-control users can say what they see.
     homeLinkLabel: 'LJ, Liam Jeong, home',
     navLabel: 'Primary',
     nav: [

@@ -44,13 +44,19 @@ describe('lj-app', () => {
         expect(main.querySelector('header')).toBeNull();
     });
 
-    it('names the home link with its visible text first', () => {
+    it('names the logo link from content and keeps the logo decorative', () => {
         const element = render();
 
         const home = element.querySelector('.site-header__mark');
-        expect(
-            home.getAttribute('aria-label').startsWith(home.textContent)
-        ).toBe(true);
+        expect(home.getAttribute('aria-label')).toBe(ui.homeLinkLabel);
+        expect(home.querySelector('img').getAttribute('alt')).toBe('');
+    });
+
+    it('keeps the footer logo decorative', () => {
+        const element = render();
+
+        const mark = element.querySelector('.site-footer__mark');
+        expect(mark.getAttribute('alt')).toBe('');
     });
 
     it('renders one proof point per entry', () => {

@@ -25,7 +25,8 @@ src/
 ├── content/home.html          Home route body: the hydrated root component
 ├── assets/
 │   ├── css/site.css           Design tokens, SLDS styling hooks, layout
-│   └── images/favicon.svg
+│   ├── logo/                  Logo marks, favicons, app icons, link-preview image
+│   └── site.webmanifest       Home-screen icons for Android
 └── modules/lj/
     ├── app/                   Root component: header, proof points, contact, footer
     ├── hero/                  Name, positioning, animated schema diagram
