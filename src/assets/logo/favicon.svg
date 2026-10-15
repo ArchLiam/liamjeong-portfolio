@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="fv-letters" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100">
+      <stop offset="0" stop-color="#5db8ff"/>
+      <stop offset="1" stop-color="#b5ecff"/>
+    </linearGradient>
+    <linearGradient id="fv-cloud" gradientUnits="userSpaceOnUse" x1="6" y1="0" x2="52" y2="32">
+      <stop offset="0" stop-color="#1b96ff"/>
+      <stop offset="1" stop-color="#00c2ff"/>
+    </linearGradient>
+    <mask id="fv-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="116" height="128">
+      <rect width="116" height="128" fill="#fff"/>
+      <g transform="translate(31.9 14) scale(0.9)" fill="#000" stroke="#000" stroke-width="7">
+        <rect x="6" y="16" width="46" height="16" rx="8"/>
+        <circle cx="18" cy="17" r="9"/>
+        <circle cx="32" cy="12" r="12"/>
+        <circle cx="44" cy="18" r="8"/>
+      </g>
+    </mask>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0d1b2e"/>
+  <g transform="translate(8.8 6.4) scale(0.4)">
+    <g mask="url(#fv-cut)">
+      <polygon points="13,38 58,64 58,116 13,90" fill="#1b96ff" fill-opacity="0.22"/>
+      <polygon points="58,64 103,38 103,90 58,116" fill="#00c2ff" fill-opacity="0.12"/>
+      <g fill="none" stroke="url(#fv-letters)" stroke-width="18" stroke-linecap="butt" stroke-linejoin="miter">
+        <path transform="matrix(0.45 0.26 0 0.52 13 38)" d="M28 12 V82 H78"/>
+        <g transform="matrix(0.45 -0.26 0 0.52 58 64)">
+          <path d="M46 16 H80"/>
+          <path d="M72 16 V68 L58 82 H38 L26 70 V58"/>
+        </g>
+      </g>
+      <g fill="none" stroke="#78c8ff" stroke-opacity="0.6" stroke-width="4" stroke-linejoin="round">
+        <polygon points="58,12 103,38 103,90 58,116 13,90 13,38"/>
+      </g>
+    </g>
+    <g transform="translate(31.9 14) scale(0.9)" fill="url(#fv-cloud)">
+      <rect x="6" y="16" width="46" height="16" rx="8"/>
+      <circle cx="18" cy="17" r="9"/>
+      <circle cx="32" cy="12" r="12"/>
+      <circle cx="44" cy="18" r="8"/>
+    </g>
+  </g>
+</svg>

@@ -140,13 +140,15 @@ h3 {
     justify-content: space-between;
 }
 
+/* Block, so the focus ring wraps the logo instead of an empty inline box */
 .site-header__mark {
-    font-family: var(--lj-font-display);
-    font-weight: 700;
-    font-size: var(--lj-step-1);
-    color: var(--lj-ink);
-    text-decoration: none;
-    letter-spacing: -0.04em;
+    display: block;
+}
+
+.site-header__mark img {
+    display: block;
+    height: 40px;
+    width: auto;
 }
 
 .site-header__nav {
@@ -559,6 +561,19 @@ h3 {
 .site-footer .section__inner {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
+}
+
+.site-footer__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.site-footer__mark {
+    display: block;
+    flex: none;
+    height: 30px;
+    width: auto;
 }
 
 .site-footer p {
