@@ -1,0 +1,103 @@
+<template lwc:render-mode="light">
+    <section class="hero" aria-labelledby="hero-title">
+        <div
+            class="hero__inner slds-grid slds-wrap slds-grid_vertical-align-center"
+        >
+            <div
+                class="hero__copy slds-col slds-size_1-of-1 slds-large-size_6-of-12"
+                lwc:ref="copy"
+            >
+                <!-- LWC drops whitespace that spans a line break; &#32; keeps the space -->
+                <p class="hero__name" data-intro="true">
+                    {profile.name}&#32;
+                    <span class="hero__known-as">({profile.knownAs})</span>
+                </p>
+                <h1 id="hero-title" class="hero__headline" data-intro="true">
+                    {profile.headline}
+                </h1>
+                <p class="hero__intro" data-intro="true">{profile.intro}</p>
+                <div class="hero__actions" data-intro="true">
+                    <a
+                        class="slds-button slds-button_brand hero__cta"
+                        href="#work"
+                    >
+                        {ui.hero.primaryAction}
+                    </a>
+                    <a class="hero__secondary" href="#contact"
+                        >{ui.hero.secondaryAction}</a
+                    >
+                </div>
+            </div>
+
+            <div
+                class="hero__visual slds-col slds-size_1-of-1 slds-large-size_6-of-12"
+            >
+                <svg
+                    class="schema"
+                    viewBox="0 0 560 440"
+                    role="img"
+                    aria-labelledby="schema-title schema-desc"
+                    lwc:ref="diagram"
+                >
+                    <title id="schema-title">{diagramTitle}</title>
+                    <desc id="schema-desc">{diagramDescription}</desc>
+
+                    <g class="schema__edges">
+                        <template for:each={edges} for:item="edge">
+                            <path
+                                key={edge.id}
+                                class="schema-edge"
+                                d={edge.d}
+                                data-edge="true"
+                            ></path>
+                        </template>
+                    </g>
+
+                    <g class="schema__nodes">
+                        <template for:each={nodes} for:item="node">
+                            <g key={node.id} transform={node.transform}>
+                                <g class={node.className} data-node="true">
+                                    <rect
+                                        class="schema-node__card"
+                                        width={nodeWidth}
+                                        height={nodeHeight}
+                                        rx="8"
+                                    ></rect>
+                                    <rect
+                                        class="schema-node__band"
+                                        width={nodeWidth}
+                                        height="4"
+                                        rx="2"
+                                    ></rect>
+                                    <text
+                                        class="schema-node__label"
+                                        x="14"
+                                        y="26"
+                                    >
+                                        {node.label}
+                                    </text>
+                                    <text
+                                        class="schema-node__sub"
+                                        x="14"
+                                        y="43"
+                                    >
+                                        {node.sub}
+                                    </text>
+                                    <template lwc:if={node.focus}>
+                                        <circle
+                                            class="schema-node__signal"
+                                            cx="118"
+                                            cy="20"
+                                            r="6"
+                                            data-focus="true"
+                                        ></circle>
+                                    </template>
+                                </g>
+                            </g>
+                        </template>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </section>
+</template>

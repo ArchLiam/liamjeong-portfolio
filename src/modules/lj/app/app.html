@@ -1,0 +1,63 @@
+<template lwc:render-mode="light">
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="site-header__mark" href="/" aria-label={ui.homeLinkLabel}
+                >{profile.knownAs}</a
+            >
+            <nav class="site-header__nav" aria-label={ui.navLabel}>
+                <template for:each={ui.nav} for:item="item">
+                    <a key={item.href} href={item.href}>{item.label}</a>
+                </template>
+            </nav>
+        </div>
+    </header>
+
+    <!-- The layout's skip link targets #main; tabindex lets it take focus -->
+    <main id="main" tabindex="-1">
+        <lj-hero></lj-hero>
+
+        <section class="section proof" aria-label={ui.proofLabel}>
+            <div class="section__inner proof__grid">
+                <template for:each={proofPoints} for:item="point">
+                    <div key={point.id} class="proof__item">
+                        <h2 class="proof__title">{point.title}</h2>
+                        <p class="proof__body">{point.body}</p>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <lj-work></lj-work>
+        <lj-experience></lj-experience>
+
+        <section
+            id="contact"
+            class="section contact"
+            aria-labelledby="contact-title"
+        >
+            <div class="section__inner">
+                <h2 id="contact-title" class="contact__title">
+                    {profile.availability}
+                </h2>
+                <p class="contact__body">{ui.contact.body}</p>
+                <!-- role="list": Safari drops list semantics when list-style is none -->
+                <ul class="contact__links" role="list">
+                    <template for:each={contactLinks} for:item="link">
+                        <li key={link.key}>
+                            <a href={link.href}>{link.label}</a>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="section__inner">
+            <p>
+                {ui.footer.text}&#32;
+                <a href={ui.footer.sourceUrl}>{ui.footer.sourceLabel}</a>.
+            </p>
+        </div>
+    </footer>
+</template>

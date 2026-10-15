@@ -1,0 +1,62 @@
+<template lwc:render-mode="light">
+    <section id="work" class="section work" aria-labelledby="work-title">
+        <div class="section__inner">
+            <h2 id="work-title" class="section__title">{ui.work.title}</h2>
+            <p class="section__lede">{ui.work.lede}</p>
+
+            <!-- role="list": Safari drops list semantics when list-style is none -->
+            <ul class="work__list" role="list">
+                <template for:each={caseStudies} for:item="study">
+                    <li key={study.id} class="work__item">
+                        <details class="case">
+                            <summary class="case__summary">
+                                <span class="case__heading">
+                                    <span
+                                        id={study.headingId}
+                                        class="case__title"
+                                    >
+                                        {study.title}
+                                    </span>
+                                    <span class="case__meta">
+                                        {study.client}, {study.year}
+                                    </span>
+                                </span>
+                                <span class="case__tags">
+                                    <template
+                                        for:each={study.tagItems}
+                                        for:item="tag"
+                                    >
+                                        <span
+                                            key={tag.key}
+                                            class="slds-badge case__tag"
+                                        >
+                                            {tag.label}
+                                        </span>
+                                    </template>
+                                </span>
+                            </summary>
+                            <dl class="case__body">
+                                <div class="case__field">
+                                    <dt>{ui.work.fields.context}</dt>
+                                    <dd>{study.context}</dd>
+                                </div>
+                                <div class="case__field">
+                                    <dt>{ui.work.fields.constraints}</dt>
+                                    <dd>{study.constraints}</dd>
+                                </div>
+                                <div class="case__field">
+                                    <dt>{ui.work.fields.decision}</dt>
+                                    <dd>{study.decision}</dd>
+                                </div>
+                                <div class="case__field">
+                                    <dt>{ui.work.fields.outcome}</dt>
+                                    <dd>{study.outcome}</dd>
+                                </div>
+                            </dl>
+                        </details>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </section>
+</template>
