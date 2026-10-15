@@ -1,0 +1,586 @@
+/*
+ * Site layer on top of SLDS.
+ * SLDS supplies the grid, utilities, buttons and badges; this file supplies
+ * the identity: palette, type, the hero diagram, and section layout.
+ *
+ * Direction: a Schema Builder blueprint. Cool paper, navy ink, one Salesforce
+ * brand blue for structure, and a single amber signal reserved for the
+ * focus point of the diagram.
+ */
+
+:root {
+    --lj-paper: #f3f6f9;
+    --lj-surface: #ffffff;
+    --lj-ink: #13233a;
+    --lj-slate: #56677d;
+    --lj-rule: #cfd9e4;
+    --lj-brand: #0b5cab;
+    --lj-brand-deep: #08427c;
+    --lj-signal: #e2a33b;
+    --lj-on-ink: #b9c6d6;
+    --lj-on-ink-muted: #8fa1b6;
+    --lj-ink-rule: #2a3d57;
+
+    --lj-font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+    --lj-font-text: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+
+    /* Type scale, ratio 1.25 from a 17px base */
+    --lj-step--1: 0.85rem;
+    --lj-step-0: 1.0625rem;
+    --lj-step-1: 1.33rem;
+    --lj-step-2: 1.66rem;
+    --lj-step-3: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem);
+    --lj-step-4: clamp(2.4rem, 1.5rem + 3.4vw, 4.1rem);
+
+    --lj-gutter: clamp(1rem, 4vw, 3rem);
+    --lj-measure: 68ch;
+    --lj-max-width: 76rem;
+
+    /* SLDS styling hooks: retheme the brand button without overriding classes */
+    --slds-c-button-brand-color-background: var(--lj-ink);
+    --slds-c-button-brand-color-border: var(--lj-ink);
+    --slds-c-button-brand-color-background-hover: var(--lj-brand-deep);
+    --slds-c-button-brand-color-border-hover: var(--lj-brand-deep);
+    --slds-c-button-radius-border: 6px;
+    /*
+     * SLDS draws button focus as a box-shadow: plain buttons read the component
+     * hook, brand buttons read the global one. Both match the site focus ring.
+     */
+    --slds-c-button-shadow-focus:
+        0 0 0 3px var(--lj-signal), 0 0 0 5px var(--lj-ink);
+    --slds-g-shadow-outset-focus-1:
+        0 0 0 3px var(--lj-signal), 0 0 0 5px var(--lj-ink);
+}
+
+/* ---------- Base ---------- */
+
+html {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+body {
+    margin: 0;
+    background: var(--lj-paper);
+    color: var(--lj-ink);
+    font-family: var(--lj-font-text);
+    font-size: var(--lj-step-0);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--lj-brand);
+    text-underline-offset: 0.18em;
+}
+
+a:hover {
+    color: var(--lj-brand-deep);
+}
+
+/*
+ * One focus ring everywhere: amber inside, ink outside. Amber alone is under
+ * 3:1 on the paper background, so the ink ring carries the contrast there and
+ * the amber carries it on ink sections. `a:focus-visible` matches the
+ * specificity of SLDS's own link rule, and this file loads later, so it wins.
+ */
+:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--lj-signal);
+    outline-offset: 0;
+    box-shadow: 0 0 0 5px var(--lj-ink);
+    border-radius: 4px;
+}
+
+/* The skip link moves focus to <main>; don't ring the whole page */
+main:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.skip-link {
+    position: absolute;
+    left: var(--lj-gutter);
+    top: -4rem;
+    padding: 0.5rem 1rem;
+    background: var(--lj-ink);
+    color: var(--lj-paper);
+    z-index: 10;
+}
+
+.skip-link:focus {
+    top: 1rem;
+    color: var(--lj-paper);
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--lj-font-display);
+    color: var(--lj-ink);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+/* ---------- Header ---------- */
+
+.site-header__inner {
+    max-width: var(--lj-max-width);
+    margin: 0 auto;
+    padding: 1.25rem var(--lj-gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.site-header__mark {
+    font-family: var(--lj-font-display);
+    font-weight: 700;
+    font-size: var(--lj-step-1);
+    color: var(--lj-ink);
+    text-decoration: none;
+    letter-spacing: -0.04em;
+}
+
+.site-header__nav {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2rem);
+}
+
+.site-header__nav a {
+    color: var(--lj-slate);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.site-header__nav a:hover {
+    color: var(--lj-ink);
+}
+
+/* ---------- Hero ---------- */
+
+.hero__inner {
+    max-width: var(--lj-max-width);
+    margin: 0 auto;
+    padding: clamp(2rem, 6vw, 5rem) var(--lj-gutter) clamp(3rem, 7vw, 6rem);
+    row-gap: 2.5rem;
+}
+
+.hero__copy {
+    padding-right: clamp(0rem, 3vw, 3rem);
+}
+
+.hero__name {
+    font-size: var(--lj-step-1);
+    font-weight: 500;
+    color: var(--lj-slate);
+    margin: 0 0 1rem;
+}
+
+.hero__known-as {
+    color: var(--lj-brand);
+}
+
+.hero__headline {
+    font-size: var(--lj-step-4);
+    max-width: 16ch;
+    margin-bottom: 1.5rem;
+}
+
+.hero__intro {
+    max-width: 46ch;
+    color: var(--lj-slate);
+    font-size: var(--lj-step-1);
+    line-height: 1.5;
+    margin: 0 0 2rem;
+}
+
+.hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.hero__cta {
+    --slds-c-button-spacing-block-start: 0.35rem;
+    --slds-c-button-spacing-block-end: 0.35rem;
+    --slds-c-button-spacing-inline-start: 1.25rem;
+    --slds-c-button-spacing-inline-end: 1.25rem;
+    --slds-c-button-line-height: 2.25rem;
+    font-size: var(--lj-step-0);
+}
+
+.hero__secondary {
+    font-weight: 500;
+}
+
+/* The diagram */
+
+.schema {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+}
+
+.schema-edge {
+    fill: none;
+    stroke: var(--lj-brand);
+    stroke-width: 1.5;
+    stroke-opacity: 0.55;
+}
+
+.schema-node__card {
+    fill: var(--lj-surface);
+    stroke: var(--lj-rule);
+    stroke-width: 1;
+}
+
+.schema-node__band {
+    fill: var(--lj-brand);
+}
+
+.schema-node__label {
+    font-family: var(--lj-font-display);
+    font-weight: 700;
+    font-size: 15px;
+    fill: var(--lj-ink);
+}
+
+.schema-node__sub {
+    font-family: var(--lj-font-text);
+    font-size: 11.5px;
+    fill: var(--lj-slate);
+}
+
+.schema-node_focus .schema-node__card {
+    stroke: var(--lj-signal);
+    stroke-width: 2;
+}
+
+.schema-node_focus .schema-node__band,
+.schema-node__signal {
+    fill: var(--lj-signal);
+}
+
+/*
+ * Intro start state. Only applies when JS is running and the visitor has not
+ * asked for reduced motion; GSAP animates these to visible. The fallback
+ * animation reveals everything after 4.5s if the script never runs.
+ */
+@media (prefers-reduced-motion: no-preference) {
+    .js [data-intro],
+    .js [data-node],
+    .js [data-edge],
+    .js [data-focus] {
+        opacity: 0;
+        animation: intro-fallback 0s linear 4.5s forwards;
+    }
+}
+
+@keyframes intro-fallback {
+    to {
+        opacity: 1;
+    }
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+    border-top: 1px solid var(--lj-rule);
+}
+
+.section__inner {
+    max-width: var(--lj-max-width);
+    margin: 0 auto;
+    padding: clamp(3rem, 7vw, 5.5rem) var(--lj-gutter);
+}
+
+.section__title {
+    font-size: var(--lj-step-3);
+    margin-bottom: 1rem;
+}
+
+.section__lede {
+    max-width: var(--lj-measure);
+    color: var(--lj-slate);
+    margin: 0 0 2.5rem;
+}
+
+/* Proof points: three columns of plain text, no cards */
+
+.proof {
+    background: var(--lj-surface);
+}
+
+.proof__grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.proof__item {
+    border-left: 3px solid var(--lj-brand);
+    padding-left: 1.25rem;
+}
+
+.proof__title {
+    font-size: var(--lj-step-1);
+    margin-bottom: 0.6rem;
+}
+
+.proof__body {
+    color: var(--lj-slate);
+    margin: 0;
+    max-width: 38ch;
+}
+
+/* Selected work: expandable rows */
+
+.work__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--lj-ink);
+}
+
+.work__item {
+    border-bottom: 1px solid var(--lj-rule);
+}
+
+.case__summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    padding: 1.5rem 0;
+}
+
+.case__summary::-webkit-details-marker {
+    display: none;
+}
+
+.case__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.case__title {
+    font-family: var(--lj-font-display);
+    font-weight: 700;
+    font-size: var(--lj-step-2);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+}
+
+.case__title::before {
+    content: '+';
+    /* Empty alt text after the slash: screen readers skip it instead of saying "plus" */
+    content: '+' / '';
+    display: inline-block;
+    width: 1.25em;
+    color: var(--lj-brand);
+    transition: transform 0.2s ease;
+}
+
+.case[open] .case__title::before {
+    transform: rotate(45deg);
+}
+
+.case__meta {
+    color: var(--lj-slate);
+    padding-left: 1.25em;
+    font-size: var(--lj-step--1);
+}
+
+.case__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.case__tag {
+    --slds-c-badge-color-background: var(--lj-paper);
+    --slds-c-badge-text-color: var(--lj-ink);
+    --slds-c-badge-color-border: var(--lj-rule);
+}
+
+/*
+ * Documented exception to "use hooks, don't override SLDS": SLDS hard-codes the
+ * badge's weight and sibling margin with no hook. The row spaces tags with gap,
+ * so the margin would double it.
+ */
+.case__tag.slds-badge {
+    font-weight: 500;
+    margin: 0;
+}
+
+.case__body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.5rem 2.5rem;
+    margin: 0;
+    padding: 0 0 2rem 1.6rem;
+}
+
+.case__field dt {
+    font-weight: 600;
+    color: var(--lj-ink);
+    margin-bottom: 0.3rem;
+}
+
+.case__field dd {
+    margin: 0;
+    color: var(--lj-slate);
+}
+
+/* Experience timeline: a real sequence, newest first */
+
+.experience {
+    background: var(--lj-surface);
+}
+
+.experience .section__inner {
+    row-gap: 2rem;
+}
+
+.experience__credentials {
+    color: var(--lj-slate);
+    max-width: 30ch;
+    margin: 0 0 1rem;
+}
+
+.timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1.5rem;
+    border-left: 2px solid var(--lj-rule);
+}
+
+.timeline__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    column-gap: 1.5rem;
+    padding: 0 0 1.75rem;
+}
+
+.timeline__item::before {
+    content: '';
+    position: absolute;
+    left: calc(-1.5rem - 6px);
+    top: 0.55em;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--lj-surface);
+    border: 2px solid var(--lj-brand);
+}
+
+.timeline__item:first-child::before {
+    background: var(--lj-brand);
+}
+
+.timeline__period {
+    grid-row: span 2;
+    color: var(--lj-slate);
+    font-size: var(--lj-step--1);
+    padding-top: 0.2em;
+}
+
+.timeline__org {
+    font-weight: 600;
+}
+
+.timeline__role {
+    color: var(--lj-slate);
+}
+
+/* Contact */
+
+.contact {
+    background: var(--lj-ink);
+    color: var(--lj-paper);
+    border-top: 0;
+}
+
+.contact__title {
+    color: var(--lj-paper);
+    font-size: var(--lj-step-3);
+    max-width: 20ch;
+    margin-bottom: 1rem;
+}
+
+.contact__body {
+    color: var(--lj-on-ink);
+    margin: 0 0 2rem;
+}
+
+.contact__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+}
+
+.contact__links a {
+    color: var(--lj-paper);
+    font-size: var(--lj-step-1);
+    font-weight: 500;
+    text-decoration-color: var(--lj-signal);
+    text-decoration-thickness: 2px;
+}
+
+.contact__links a:hover {
+    color: var(--lj-signal);
+}
+
+.site-footer {
+    background: var(--lj-ink);
+    color: var(--lj-on-ink-muted);
+    font-size: var(--lj-step--1);
+    border-top: 1px solid var(--lj-ink-rule);
+}
+
+.site-footer .section__inner {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+.site-footer a {
+    color: var(--lj-on-ink);
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 40em) {
+    .timeline__item {
+        grid-template-columns: 1fr;
+    }
+
+    .timeline__period {
+        grid-row: auto;
+    }
+
+    .case__body {
+        padding-left: 0;
+    }
+}

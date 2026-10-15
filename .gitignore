@@ -1,0 +1,27 @@
+# Dependencies
+node_modules
+
+# LWR build output and cache
+/site
+/__lwr_cache__
+
+# Jest
+/coverage
+
+# Vercel
+.vercel
+
+# Local environment variables (never commit secrets)
+.env
+.env.*
+
+# Local-only working notes, not published
+/CLAUDE.md
+/Compliance/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

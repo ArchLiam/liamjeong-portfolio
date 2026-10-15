@@ -1,0 +1,31 @@
+# Quality gate for every push, on any branch. Pull requests from branches in
+# this repo show these results too, so there is no separate pull_request run.
+name: CI
+
+on:
+    push:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    verify:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+
+            # Node version comes from "engines" in package.json
+            - uses: actions/setup-node@v7
+              with:
+                  node-version-file: package.json
+                  cache: npm
+
+            - run: npm ci
+            - run: npm run format:check
+            - run: npm run lint
+            - run: npm test
+            # Fails if server-side rendering didn't produce the page (scripts/postbuild.js)
+            - run: npm run build

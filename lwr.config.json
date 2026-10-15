@@ -1,0 +1,33 @@
+{
+    "lwc": {
+        "modules": [{ "dir": "$rootDir/src/modules" }]
+    },
+    "bundleConfig": { "exclude": ["lwc"] },
+    "assets": [
+        {
+            "alias": "assetsDir",
+            "dir": "$rootDir/src/assets",
+            "urlPath": "/assets"
+        },
+        {
+            "alias": "sldsDir",
+            "dir": "$rootDir/node_modules/@salesforce-ux/design-system/assets/styles",
+            "urlPath": "/slds"
+        },
+        {
+            "dir": "$rootDir/node_modules/@salesforce-ux/design-system/assets/images",
+            "urlPath": "/slds-images"
+        }
+    ],
+    "routes": [
+        {
+            "id": "home",
+            "path": "/",
+            "contentTemplate": "$contentDir/home.html",
+            "layoutTemplate": "$layoutsDir/main.html",
+            "bootstrap": {
+                "ssr": true
+            }
+        }
+    ]
+}

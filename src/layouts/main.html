@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Liam (LJ) Jeong, Salesforce Architect</title>
+        <meta
+            name="description"
+            content="Liam (LJ) Jeong is a Salesforce Architect who designs and builds Agentforce, OmniStudio, and Revenue Cloud solutions for regulated and public-sector work."
+        />
+        <meta name="author" content="Liam (LJ) Jeong" />
+        <link rel="canonical" href="https://liamjeong.com/" />
+
+        <!-- Link previews (LinkedIn, Slack, iMessage) -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://liamjeong.com/" />
+        <meta
+            property="og:title"
+            content="Liam (LJ) Jeong, Salesforce Architect"
+        />
+        <meta
+            property="og:description"
+            content="Agentforce on GovCloud, OmniStudio, Revenue Cloud, and the integrations around them."
+        />
+        <!-- TODO: add a 1200x630 image at src/assets/images/og.png, then uncomment -->
+        <!-- <meta property="og:image" content="https://liamjeong.com/assets/images/og.png" /> -->
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta name="theme-color" content="#13233A" />
+        <link
+            rel="icon"
+            href="$assetsDir/images/favicon.svg"
+            type="image/svg+xml"
+        />
+
+        <!-- Fonts: Bricolage Grotesque (display) + IBM Plex Sans (text) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        />
+
+        <!-- SLDS first, then the site layer so its tokens win -->
+        <link
+            rel="stylesheet"
+            href="$sldsDir/salesforce-lightning-design-system.min.css"
+        />
+        <link rel="stylesheet" href="$assetsDir/css/site.css" />
+
+        <!-- Marks the page as JS-capable so intro elements can start hidden.
+             Without JS (or with reduced motion), everything renders visible. -->
+        <script>
+            document.documentElement.classList.add('js');
+        </script>
+    </head>
+    <body>
+        <a class="skip-link" href="#main">Skip to content</a>
+        {{{body}}} {{{lwr_resources}}}
+    </body>
+</html>
