@@ -7,11 +7,7 @@
                 class="hero__copy slds-col slds-size_1-of-1 slds-large-size_6-of-12"
                 lwc:ref="copy"
             >
-                <!-- LWC drops whitespace that spans a line break; &#32; keeps the space -->
-                <p class="hero__name" data-intro="true">
-                    {profile.name}&#32;
-                    <span class="hero__known-as">({profile.knownAs})</span>
-                </p>
+                <lj-lockup class="hero__lockup" data-intro="true"></lj-lockup>
                 <h1 id="hero-title" class="hero__headline" data-intro="true">
                     {profile.headline}
                 </h1>

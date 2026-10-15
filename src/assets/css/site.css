@@ -20,6 +20,7 @@
     --lj-on-ink: #b9c6d6;
     --lj-on-ink-muted: #8fa1b6;
     --lj-ink-rule: #2a3d57;
+    --lj-on-ink-accent: #a6cef5;
 
     --lj-font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
     --lj-font-text: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
@@ -179,15 +180,10 @@ h3 {
     padding-right: clamp(0rem, 3vw, 3rem);
 }
 
-.hero__name {
-    font-size: var(--lj-step-1);
-    font-weight: 500;
-    color: var(--lj-slate);
-    margin: 0 0 1rem;
-}
-
-.hero__known-as {
-    color: var(--lj-brand);
+/* Block, so the intro animation's slide-up transform applies to it */
+.hero__lockup {
+    display: block;
+    margin: 0 0 1.75rem;
 }
 
 .hero__headline {
@@ -292,6 +288,72 @@ h3 {
     to {
         opacity: 1;
     }
+}
+
+/* ---------- Logo lockup (the on-page og.png) ---------- */
+
+/*
+ * Proportions follow og.png: the text block is about 70% of the mark's
+ * height, and the gap about a third of it. Contexts resize the lockup by
+ * setting --lj-lockup-mark and --lj-lockup-gap.
+ */
+.lockup {
+    display: flex;
+    align-items: center;
+    gap: var(--lj-lockup-gap, 1.35rem);
+}
+
+.lockup__mark {
+    display: block;
+    flex: none;
+    height: var(--lj-lockup-mark, 72px);
+    width: auto;
+}
+
+.lockup__text {
+    display: flex;
+    flex-direction: column;
+}
+
+.lockup__name {
+    font-family: var(--lj-font-display);
+    font-weight: 700;
+    font-size: var(--lj-step-2);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.lockup__role {
+    font-weight: 500;
+    font-size: var(--lj-step-0);
+    line-height: 1.4;
+    margin-top: 0.2rem;
+}
+
+.lockup__domain {
+    font-size: var(--lj-step--1);
+    line-height: 1.5;
+    margin-top: 0.35rem;
+}
+
+.lockup_light .lockup__name {
+    color: var(--lj-ink);
+}
+
+.lockup_light .lockup__role {
+    color: var(--lj-brand);
+}
+
+.lockup_dark .lockup__name {
+    color: var(--lj-paper);
+}
+
+.lockup_dark .lockup__role {
+    color: var(--lj-on-ink-accent);
+}
+
+.lockup_dark .lockup__domain {
+    color: var(--lj-on-ink-muted);
 }
 
 /* ---------- Sections ---------- */
@@ -559,21 +621,26 @@ h3 {
 }
 
 .site-footer .section__inner {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
 }
 
+/* Lockup on the left, legal line on the right; they stack on narrow screens */
 .site-footer__inner {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem 3rem;
 }
 
-.site-footer__mark {
-    display: block;
-    flex: none;
-    height: 30px;
-    width: auto;
+.site-footer .lockup {
+    --lj-lockup-mark: 104px;
+    --lj-lockup-gap: 1.9rem;
+}
+
+.site-footer .lockup__name {
+    font-size: var(--lj-step-3);
 }
 
 .site-footer p {

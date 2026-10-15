@@ -11,8 +11,9 @@ export const profile = {
     name: 'Liam Jeong',
     knownAs: 'LJ',
     role: 'Salesforce Architect',
+    domain: 'liamjeong.com',
     location: 'Dallas–Fort Worth, Texas',
-    headline: 'An architect who still writes the Apex.',
+    headline: 'An architect who still writes the code.',
     intro: 'I design and build Salesforce for public-sector and regulated work: Agentforce on GovCloud, OmniStudio and Revenue Cloud, and the integrations and deployment pipelines underneath.',
     availability: 'Open to architect and lead developer roles.',
     links: {

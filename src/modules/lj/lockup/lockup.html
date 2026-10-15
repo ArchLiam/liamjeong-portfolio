@@ -1,0 +1,14 @@
+<template lwc:render-mode="light">
+    <div class={className}>
+        <!-- Decorative: the name beside it says who this is -->
+        <img class="lockup__mark" src={markSrc} alt="" width="58" height="64" />
+        <!-- &#32; keeps a space between lines in the text content (search, screen readers) -->
+        <span class="lockup__text">
+            <span class="lockup__name">{profile.name}</span>&#32;
+            <span class="lockup__role">{profile.role}</span>
+            <template lwc:if={showDomain}>
+                &#32;<span class="lockup__domain">{profile.domain}</span>
+            </template>
+        </span>
+    </div>
+</template>
