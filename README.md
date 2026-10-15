@@ -29,7 +29,8 @@ src/
 │   └── site.webmanifest       Home-screen icons for Android
 └── modules/lj/
     ├── app/                   Root component: header, proof points, contact, footer
-    ├── hero/                  Name, positioning, animated schema diagram
+    ├── hero/                  Lockup, positioning, animated schema diagram
+    ├── lockup/                Logo lockup (mark, name, role), light and dark
     ├── work/                  Case studies as native <details> rows
     ├── experience/            Timeline and credentials
     └── content/               All copy and data in one module

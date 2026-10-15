@@ -60,15 +60,8 @@
 
     <footer class="site-footer">
         <div class="section__inner site-footer__inner">
-            <!-- Decorative: the footer text already names Liam Jeong -->
-            <img
-                class="site-footer__mark"
-                src="/assets/logo/logo-mark-dark.svg"
-                alt=""
-                width="27"
-                height="30"
-            />
-            <p>
+            <lj-lockup variant="dark" show-domain></lj-lockup>
+            <p class="site-footer__legal">
                 {ui.footer.text}&#32;
                 <a href={ui.footer.sourceUrl}>{ui.footer.sourceLabel}</a>.
             </p>

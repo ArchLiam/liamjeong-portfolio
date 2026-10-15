@@ -52,11 +52,14 @@ describe('lj-app', () => {
         expect(home.querySelector('img').getAttribute('alt')).toBe('');
     });
 
-    it('keeps the footer logo decorative', () => {
+    it('signs off the footer with the dark lockup and the domain', () => {
         const element = render();
 
-        const mark = element.querySelector('.site-footer__mark');
-        expect(mark.getAttribute('alt')).toBe('');
+        const lockup = element.querySelector('.site-footer .lockup');
+        expect(lockup.classList.contains('lockup_dark')).toBe(true);
+        expect(lockup.querySelector('.lockup__domain').textContent).toBe(
+            profile.domain
+        );
     });
 
     it('renders one proof point per entry', () => {
@@ -96,7 +99,7 @@ describe('lj-app', () => {
     it('renders the footer copy and a link to the source', () => {
         const element = render();
 
-        const footer = element.querySelector('.site-footer p');
+        const footer = element.querySelector('.site-footer__legal');
         expect(footer.textContent).toBe(
             `${ui.footer.text} ${ui.footer.sourceLabel}.`
         );
