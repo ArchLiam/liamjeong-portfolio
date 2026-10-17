@@ -1,0 +1,155 @@
+<template lwc:render-mode="light">
+    <section
+        id="recommendations"
+        class="section recommendations"
+        aria-labelledby="recommendations-title"
+    >
+        <div class="section__inner">
+            <div class="recommendations__head">
+                <div>
+                    <h2
+                        id="recommendations-title"
+                        class="section__title recommendations__title"
+                    >
+                        {ui.recommendations.title}
+                    </h2>
+                    <p class="recommendations__lede">
+                        {ui.recommendations.lede}
+                    </p>
+                </div>
+                <p class="recommendations__count" aria-hidden="true">
+                    {counter}
+                </p>
+            </div>
+
+            <!-- All quotes are in the HTML; with JS, one shows at a time -->
+            <div class="recommendations__panels">
+                <template for:each={slides} for:item="slide">
+                    <div
+                        key={slide.id}
+                        id={slide.panelId}
+                        class={slide.panelClass}
+                        role="tabpanel"
+                        aria-labelledby={slide.tabId}
+                    >
+                        <figure class="recommendation">
+                            <blockquote class="recommendation__quote">
+                                <p>{slide.quote}</p>
+                            </blockquote>
+                            <figcaption class="recommendation__by">
+                                <!-- Decorative: the name sits right beside it -->
+                                <template lwc:if={slide.photo}>
+                                    <img
+                                        class="recommendation__avatar"
+                                        src={slide.photo}
+                                        alt=""
+                                        width="56"
+                                        height="56"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </template>
+                                <template lwc:else>
+                                    <span
+                                        class="recommendation__avatar recommendation__avatar_initials"
+                                        aria-hidden="true"
+                                        >{slide.initials}</span
+                                    >
+                                </template>
+                                <span class="recommendation__who">
+                                    <span class="recommendation__name"
+                                        >{slide.name}&#32;</span
+                                    >
+                                    <span class="recommendation__title"
+                                        >{slide.title}&#32;</span
+                                    >
+                                    <span class="recommendation__meta"
+                                        >{slide.meta}</span
+                                    >
+                                </span>
+                            </figcaption>
+                        </figure>
+                    </div>
+                </template>
+            </div>
+
+            <div class="recommendations__controls">
+                <div
+                    class="recommendations__picker"
+                    role="tablist"
+                    aria-label={ui.recommendations.pickerLabel}
+                >
+                    <template for:each={slides} for:item="slide">
+                        <button
+                            key={slide.tabKey}
+                            id={slide.tabId}
+                            type="button"
+                            role="tab"
+                            class={slide.tabClass}
+                            aria-selected={slide.selected}
+                            aria-controls={slide.panelId}
+                            tabindex={slide.tabIndex}
+                            data-index={slide.index}
+                            onclick={handleTabClick}
+                            onkeydown={handleTabKeydown}
+                        >
+                            <!-- The avatar is the tab's label: a photo or an
+                                 initials badge, both named after the person -->
+                            <template lwc:if={slide.photo}>
+                                <img
+                                    class="recommendations__tab-photo"
+                                    src={slide.photo}
+                                    alt={slide.name}
+                                    width="44"
+                                    height="44"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </template>
+                            <template lwc:else>
+                                <span
+                                    class="recommendations__tab-photo recommendations__tab-photo_initials"
+                                    role="img"
+                                    aria-label={slide.name}
+                                    >{slide.initials}</span
+                                >
+                            </template>
+                        </button>
+                    </template>
+                </div>
+
+                <div class="recommendations__step">
+                    <button
+                        type="button"
+                        class="recommendations__arrow"
+                        aria-label={ui.recommendations.previous}
+                        onclick={handlePrevious}
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 5l-7 7 7 7"></path>
+                        </svg>
+                    </button>
+                    <button
+                        type="button"
+                        class="recommendations__arrow"
+                        aria-label={ui.recommendations.next}
+                        onclick={handleNext}
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Previous/next leave focus on the button, so say where they went -->
+                <p class="slds-assistive-text" aria-live="polite">{status}</p>
+
+                <a
+                    class="recommendations__more"
+                    href={ui.recommendations.allUrl}
+                    >{ui.recommendations.allLabel}</a
+                >
+            </div>
+        </div>
+    </section>
+</template>

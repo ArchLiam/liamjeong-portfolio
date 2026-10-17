@@ -1,0 +1,132 @@
+<template lwc:render-mode="light">
+    <section
+        id="certifications"
+        class="section certifications"
+        aria-labelledby="certifications-title"
+    >
+        <div class="section__inner">
+            <h2 id="certifications-title" class="section__title">
+                {ui.certifications.title}
+            </h2>
+            <p class="section__lede">{ui.certifications.lede}</p>
+
+            <div class="badges">
+                <h3 id="certifications-trailhead" class="badges__title">
+                    {ui.certifications.badgesTitle}
+                </h3>
+                <!-- role="list": Safari drops list semantics when list-style is none -->
+                <ul
+                    class="badges__list"
+                    role="list"
+                    aria-labelledby="certifications-trailhead"
+                >
+                    <template for:each={badges} for:item="badge">
+                        <li key={badge.id} class="badge">
+                            <!-- Decorative: the badge's name sits right beside it -->
+                            <img
+                                class="badge__image"
+                                src={badge.image.src}
+                                alt=""
+                                width={badge.image.width}
+                                height={badge.image.height}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <span class="badge__text">
+                                <span class="badge__name"
+                                    >{badge.name}&#32;</span
+                                >
+                                <span class="badge__detail"
+                                    >{badge.detail}</span
+                                >
+                            </span>
+                        </li>
+                    </template>
+                </ul>
+                <template lwc:if={hasProfileUrl}>
+                    <a
+                        class="badges__profile"
+                        href={ui.certifications.profileUrl}
+                        >{ui.certifications.profileLabel}</a
+                    >
+                </template>
+            </div>
+
+            <div class="certifications__groups">
+                <template for:each={groups} for:item="group">
+                    <div
+                        key={group.id}
+                        class="certifications__group"
+                        data-issuer={group.id}
+                    >
+                        <div class="certifications__head">
+                            <h3
+                                id={group.headingId}
+                                class="certifications__issuer"
+                            >
+                                <!-- Decorative: the issuer's name sits right beside it -->
+                                <img
+                                    class="certifications__logo"
+                                    src={group.logo.src}
+                                    alt=""
+                                    width={group.logo.width}
+                                    height={group.logo.height}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                {group.issuer}
+                            </h3>
+                            <!-- The list already says how many items it has -->
+                            <span
+                                class="certifications__count"
+                                aria-hidden="true"
+                                >{group.count}</span
+                            >
+                        </div>
+                        <!-- role="list": Safari drops list semantics when list-style is none -->
+                        <ul
+                            class="certifications__list"
+                            role="list"
+                            aria-labelledby={group.headingId}
+                        >
+                            <template for:each={group.items} for:item="cert">
+                                <!-- Each piece ends in &#32; so it reads as
+                                     separate words: "Platform Developer II
+                                     Credential ID 7475913 Issued Feb 2026" -->
+                                <li key={cert.id} class="certification">
+                                    <span class="certification__name">
+                                        <template lwc:if={cert.url}>
+                                            <a href={cert.url}>{cert.name}</a>
+                                        </template>
+                                        <template lwc:else>{cert.name}</template
+                                        >&#32;
+                                    </span>
+                                    <template lwc:if={cert.credentialId}>
+                                        <span class="certification__id"
+                                            >{ui.certifications.idLabel}&#32;{cert.credentialId}&#32;</span
+                                        >
+                                    </template>
+                                    <template lwc:if={cert.issued}>
+                                        <span class="certification__date"
+                                            ><span class="slds-assistive-text"
+                                                >{ui.certifications.issuedLabel}&#32;</span
+                                            ><time datetime={cert.issued}
+                                                >{cert.issuedText}</time
+                                            ></span
+                                        >
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+
+            <p class="certifications__more">
+                <a href={ui.certifications.allUrl}
+                    >{ui.certifications.allLabel}</a
+                >
+            </p>
+        </div>
+    </section>
+</template>

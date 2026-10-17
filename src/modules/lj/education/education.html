@@ -1,0 +1,72 @@
+<template lwc:render-mode="light">
+    <section
+        id="education"
+        class="section education"
+        aria-labelledby="education-title"
+    >
+        <div class="section__inner slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12">
+                <h2 id="education-title" class="section__title">
+                    {ui.education.title}
+                </h2>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12">
+                <template for:each={schools} for:item="school">
+                    <div key={school.id} class="school">
+                        <h3 id={school.headingId} class="school__name">
+                            <!-- Decorative: the school's name sits right beside it -->
+                            <img
+                                class="school__logo"
+                                src={school.logo}
+                                alt=""
+                                width="64"
+                                height="64"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            {school.school}
+                        </h3>
+                        <!-- role="list": Safari drops list semantics when list-style is none -->
+                        <ul
+                            class="school__degrees"
+                            role="list"
+                            aria-labelledby={school.headingId}
+                        >
+                            <template
+                                for:each={school.degrees}
+                                for:item="degree"
+                            >
+                                <!-- Each piece ends in &#32; so it reads as
+                                     separate words -->
+                                <li key={degree.id} class="degree">
+                                    <span class="degree__period"
+                                        >{degree.period}&#32;</span
+                                    >
+                                    <span class="degree__field"
+                                        >{degree.field}&#32;</span
+                                    >
+                                    <span class="degree__name"
+                                        >{degree.degree}&#32;</span
+                                    >
+                                    <span class="degree__grade"
+                                        >{ui.education.gradeLabel}&#32;{degree.grade}&#32;</span
+                                    >
+                                    <template lwc:if={degree.honors}>
+                                        <span class="degree__honors"
+                                            >{degree.honors}&#32;</span
+                                        >
+                                    </template>
+                                    <template lwc:if={degree.activities}>
+                                        <span class="degree__activities"
+                                            >{ui.education.activitiesLabel}&#32;{degree.activities}</span
+                                        >
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+</template>
