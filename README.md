@@ -65,6 +65,34 @@ Automated checks catch roughly a third of WCAG issues, so changes that affect st
 
 Vercel builds from `main` using `vercel.json` (`npm run build`, output `site`). Every other branch gets a preview URL.
 
+## Analytics
+
+Visits and a few clicks are counted with [Umami Cloud](https://umami.is),
+which uses no cookies and collects no personal data, so there is no consent
+banner. The footer says so.
+
+- **Where it runs:** `src/layouts/main.html` loads the tracker with
+  `data-domains="liamjeong.com"`, so local development, CI, and Vercel preview
+  deployments are never counted, and with `data-do-not-track="true"`. The CSP
+  in `vercel.json` allows `cloud.umami.is` (the script) and
+  `gateway.umami.is` (where it sends); a test keeps the two in step.
+- **What it counts:** page views, plus clicks on anything marked
+  `data-track="Event name"`. Each `data-track-<key>` attribute adds a
+  property. The names live in `analytics` in `lj/content`, and an app test
+  checks that exactly the intended elements carry them: the hero buttons,
+  résumé downloads (`from` hero or contact), the contact links, project rows
+  opened (`project`), diagram cards selected (`card`), and the links out to
+  LinkedIn, Trailblazer, and this repo.
+- **Why not Umami's `data-umami-event`:** on a link, Umami's own handler
+  cancels the click, waits for its request, and then navigates by hand. That
+  turns the résumé's `download` into opening the PDF, and stalls the link
+  while the request is slow. `lj/analytics` listens once at the page root and
+  leaves the click alone; Umami sends with `keepalive`, so the event survives
+  the navigation.
+- **Leaving out your own visits:** on liamjeong.com, run
+  `localStorage.setItem('umami.disabled', 1)` in the browser console, once per
+  browser.
+
 ## Credits
 
 The hero diagram's icons are Salesforce Lightning Design System utility icons

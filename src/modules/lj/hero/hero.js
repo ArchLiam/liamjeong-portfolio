@@ -1,6 +1,7 @@
 import { LightningElement } from 'lwc';
 import { gsap } from 'gsap';
-import { profile, schema, ui, NODE_WIDTH } from 'lj/content';
+import { analytics, profile, schema, ui, NODE_WIDTH } from 'lj/content';
+import { track } from 'lj/analytics';
 import { icons, ICON_GRID } from 'lj/icons';
 
 // site.css reveals the intro elements at 4.5s if this script never runs. When
@@ -192,6 +193,7 @@ export default class Hero extends LightningElement {
 
     profile = profile;
     ui = ui;
+    analytics = analytics;
     diagramTitle = schema.title;
     diagramDescription = schema.description;
     viewBox = `0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`;
@@ -336,6 +338,11 @@ export default class Hero extends LightningElement {
     }
 
     select(id) {
+        // Only clicks and Enter/Space call this, so every count is a person
+        const node = schema.nodes.find((item) => item.id === id);
+        if (node) {
+            track(analytics.diagramCard, { card: node.label });
+        }
         // A selection during the intro jumps the intro to its end first
         if (this._timeline && this._timeline.progress() < 1) {
             this._timeline.progress(1);

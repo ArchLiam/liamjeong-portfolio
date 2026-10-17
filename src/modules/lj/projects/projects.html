@@ -17,7 +17,12 @@
                         <details class="project">
                             <!-- The row is the toggle's name, so each piece
                                  ends in &#32; to read as separate words -->
-                            <summary class="project__toggle">
+                            <!-- Counted when opened (lj/analytics skips closing) -->
+                            <summary
+                                class="project__toggle"
+                                data-track={analytics.openProject}
+                                data-track-project={project.title}
+                            >
                                 <span class="project__heading">
                                     <span class="project__title"
                                         >{project.title}&#32;</span

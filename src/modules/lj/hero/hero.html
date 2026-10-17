@@ -16,6 +16,7 @@
                     <a
                         class="slds-button slds-button_brand hero__cta"
                         href="#projects"
+                        data-track={analytics.heroProjects}
                     >
                         {ui.hero.primaryAction}
                     </a>
@@ -23,6 +24,8 @@
                         class="slds-button slds-button_neutral hero__cta hero__resume"
                         href={profile.links.resume}
                         download={ui.hero.resumeFileName}
+                        data-track={analytics.resume}
+                        data-track-from="hero"
                     >
                         <svg
                             class="hero__resume-icon"
@@ -35,7 +38,10 @@
                         </svg>
                         {ui.hero.resumeAction}
                     </a>
-                    <a class="hero__secondary" href="#contact"
+                    <a
+                        class="hero__secondary"
+                        href="#contact"
+                        data-track={analytics.heroContact}
                         >{ui.hero.secondaryAction}</a
                     >
                 </div>

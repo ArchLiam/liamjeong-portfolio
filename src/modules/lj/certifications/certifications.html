@@ -47,6 +47,7 @@
                     <a
                         class="badges__profile"
                         href={ui.certifications.profileUrl}
+                        data-track={analytics.trailblazer}
                         >{ui.certifications.profileLabel}</a
                     >
                 </template>
@@ -123,7 +124,9 @@
             </div>
 
             <p class="certifications__more">
-                <a href={ui.certifications.allUrl}
+                <a
+                    href={ui.certifications.allUrl}
+                    data-track={analytics.linkedinCertifications}
                     >{ui.certifications.allLabel}</a
                 >
             </p>

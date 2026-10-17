@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import { badges, certifications, ui } from 'lj/content';
+import { analytics, badges, certifications, ui } from 'lj/content';
 
 // Fixed English month names rather than Intl, so the server and the browser
 // render the same text and hydration matches
@@ -40,6 +40,7 @@ export default class Certifications extends LightningElement {
 
     ui = ui;
     badges = badges;
+    analytics = analytics;
 
     get groups() {
         return certifications.map((group) => ({

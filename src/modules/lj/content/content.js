@@ -108,8 +108,36 @@ export const ui = {
         // audit, including manual screen reader testing.
         accessibilityText: 'Built to',
         accessibilityLabel: 'WCAG 2.2 AA',
-        accessibilityUrl: 'https://www.w3.org/TR/WCAG22/'
+        accessibilityUrl: 'https://www.w3.org/TR/WCAG22/',
+        privacyText: 'This site counts visits without cookies.'
     }
+};
+
+/**
+ * Analytics event names, as they appear in Umami's Events report. Elements
+ * opt in with data-track (see lj/analytics); the comments name the property
+ * an event carries, shown under the event in Umami.
+ */
+export const analytics = {
+    heroProjects: 'Hero: Projects',
+    heroContact: 'Hero: Get in touch',
+    // "from": hero or contact
+    resume: 'Download résumé',
+    // Contact links, by their key in profile.links; the résumé shares one event
+    contact: {
+        email: 'Contact: Email',
+        linkedin: 'Contact: LinkedIn',
+        github: 'Contact: GitHub',
+        resume: 'Download résumé'
+    },
+    // "project": its title. Counts openings only, not closings.
+    openProject: 'Open project',
+    // "card": its label. Clicks and Enter/Space on a diagram card.
+    diagramCard: 'Diagram card',
+    trailblazer: 'Trailblazer profile',
+    linkedinRecommendations: 'LinkedIn: recommendations',
+    linkedinCertifications: 'LinkedIn: certifications',
+    source: 'View source'
 };
 
 // Recommendations (long, verbatim quotes) and certifications live in their own

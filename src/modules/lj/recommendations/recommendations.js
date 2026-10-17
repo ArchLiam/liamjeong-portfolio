@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import { recommendations, ui } from 'lj/content';
+import { analytics, recommendations, ui } from 'lj/content';
 
 const initialsOf = (name) =>
     name
@@ -19,6 +19,7 @@ export default class Recommendations extends LightningElement {
     static renderMode = 'light';
 
     ui = ui;
+    analytics = analytics;
     activeIndex = 0;
     status = '';
     _focusTab = false;
