@@ -33,6 +33,7 @@ export const ui = {
     nav: [
         { href: '#projects', label: 'Projects' },
         { href: '#experience', label: 'Experience' },
+        { href: '#education', label: 'Education' },
         { href: '#certifications', label: 'Certifications' },
         { href: '#contact', label: 'Contact' }
     ],

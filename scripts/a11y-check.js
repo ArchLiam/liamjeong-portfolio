@@ -10,6 +10,9 @@
  *  - the page scrolls sideways at 320px or 640px wide (Reflow, 1.4.10; 640px
  *    is a 1280px screen at 200% zoom).
  *  - any image renders under 8px wide, which means a layout rule squeezed it.
+ *  - Tab or Shift+Tab leaves a focused element fully hidden, e.g. under the
+ *    sticky header (Focus Not Obscured, 2.4.11), at desktop, 200% zoom, and
+ *    phone sizes.
  *
  * axe covers roughly a third of WCAG. The colour tokens are checked by
  * src/assets/css/__tests__/contrast.test.js; the rest needs a person (see
@@ -17,7 +20,7 @@
  *
  * Chrome: CHROME_PATH if set, else the usual macOS and Linux install paths.
  */
-/* global document, axe */
+/* global document, window, axe */
 import { createServer } from 'node:http';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -170,6 +173,94 @@ async function audit({ name, width, selectCard = false, nextQuote = false }) {
     await page.close();
 }
 
+/*
+ * Focus Not Obscured (2.4.11): the header is sticky, so press Tab through the
+ * whole page and back with Shift+Tab, and fail if a focused element is
+ * entirely hidden. "Hidden" is tested the way a person sees it: at none of
+ * five points across the element is the element itself what's drawn on top.
+ */
+async function focusNotObscured({ name, width, height }) {
+    const page = await browser.newPage();
+    await page.setViewport({ width, height });
+    await page.emulateMediaFeatures([
+        { name: 'prefers-reduced-motion', value: 'reduce' }
+    ]);
+    await page.goto(url, { waitUntil: 'networkidle0' });
+
+    const hidden = new Set();
+    let visited = 0;
+    for (const back of [false, true]) {
+        for (let i = 0; i < 300; i++) {
+            if (back) {
+                await page.keyboard.down('Shift');
+                await page.keyboard.press('Tab');
+                await page.keyboard.up('Shift');
+            } else {
+                await page.keyboard.press('Tab');
+            }
+            const state = await page.evaluate(() => {
+                const el = document.activeElement;
+                if (!el || el === document.body) {
+                    return { done: true };
+                }
+                const r = el.getBoundingClientRect();
+                const seen = [
+                    [0.5, 0.5],
+                    [0.1, 0.1],
+                    [0.9, 0.1],
+                    [0.1, 0.9],
+                    [0.9, 0.9]
+                ]
+                    .map(([fx, fy]) => [
+                        r.left + r.width * fx,
+                        r.top + r.height * fy
+                    ])
+                    .filter(
+                        ([x, y]) =>
+                            x >= 0 &&
+                            y >= 0 &&
+                            x < window.innerWidth &&
+                            y < window.innerHeight
+                    )
+                    .some(([x, y]) => {
+                        const hit = document.elementFromPoint(x, y);
+                        return hit && (hit === el || el.contains(hit));
+                    });
+                const label = (
+                    el.getAttribute('aria-label') ||
+                    el.textContent ||
+                    el.tagName
+                )
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .slice(0, 50);
+                return { done: false, seen, label };
+            });
+            if (state.done) {
+                break;
+            }
+            visited++;
+            if (!state.seen) {
+                hidden.add(`${back ? 'Shift+Tab' : 'Tab'} to "${state.label}"`);
+            }
+        }
+    }
+
+    hidden.forEach((what) =>
+        problems.push(
+            `[${name}] focus not obscured (2.4.11): ${what} leaves it fully hidden`
+        )
+    );
+    // A page with nothing to focus would pass silently; it never should
+    if (visited < 10) {
+        problems.push(
+            `[${name}] focus check reached only ${visited} elements; is the page interactive?`
+        );
+    }
+    console.log(`${hidden.size || visited < 10 ? 'FAIL' : 'ok  '}  ${name}`);
+    await page.close();
+}
+
 try {
     await audit({ name: 'desktop 1280px', width: 1280 });
     await audit({
@@ -184,6 +275,22 @@ try {
     });
     await audit({ name: '200% zoom (640px)', width: 640 });
     await audit({ name: 'phone 320px', width: 320 });
+    await focusNotObscured({
+        name: 'focus visible past the sticky header, 1280px',
+        width: 1280,
+        height: 800
+    });
+    // 200% zoom on a 1280x900 screen: the shortest view, the hardest case
+    await focusNotObscured({
+        name: 'focus visible past the sticky header, 200% zoom',
+        width: 640,
+        height: 450
+    });
+    await focusNotObscured({
+        name: 'focus visible past the sticky header, phone 320px',
+        width: 320,
+        height: 640
+    });
 } finally {
     await browser.close();
     server.close();
@@ -195,5 +302,5 @@ if (problems.length) {
     process.exit(1);
 }
 console.log(
-    '\na11y-check: no WCAG 2.2 A/AA violations found by axe, and no reflow problems.'
+    '\na11y-check: no WCAG 2.2 A/AA violations found by axe, no reflow problems, and focus is never hidden.'
 );
