@@ -15,9 +15,25 @@
                 <div class="hero__actions" data-intro="true">
                     <a
                         class="slds-button slds-button_brand hero__cta"
-                        href="#work"
+                        href="#projects"
                     >
                         {ui.hero.primaryAction}
+                    </a>
+                    <a
+                        class="slds-button slds-button_neutral hero__cta hero__resume"
+                        href={profile.links.resume}
+                        download={ui.hero.resumeFileName}
+                    >
+                        <svg
+                            class="hero__resume-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 19h14"
+                            ></path>
+                        </svg>
+                        {ui.hero.resumeAction}
                     </a>
                     <a class="hero__secondary" href="#contact"
                         >{ui.hero.secondaryAction}</a
@@ -30,21 +46,75 @@
             >
                 <svg
                     class="schema"
-                    viewBox="0 0 560 440"
-                    role="img"
-                    aria-labelledby="schema-title schema-desc"
+                    viewBox={viewBox}
+                    role="group"
+                    aria-labelledby="schema-title"
+                    aria-describedby="schema-desc"
                     lwc:ref="diagram"
                 >
                     <title id="schema-title">{diagramTitle}</title>
                     <desc id="schema-desc">{diagramDescription}</desc>
 
-                    <g class="schema__edges">
+                    <!-- Schema Builder canvas: a dot grid that fades out toward the edges -->
+                    <defs>
+                        <pattern
+                            id="schema-grid"
+                            width="20"
+                            height="20"
+                            patternUnits="userSpaceOnUse"
+                        >
+                            <circle
+                                class="schema-grid__dot"
+                                cx="2"
+                                cy="2"
+                                r="1.1"
+                            ></circle>
+                        </pattern>
+                        <radialGradient id="schema-grid-fade" r="0.62">
+                            <stop offset="0.55" stop-color="white"></stop>
+                            <stop
+                                offset="1"
+                                stop-color="white"
+                                stop-opacity="0"
+                            ></stop>
+                        </radialGradient>
+                        <mask id="schema-grid-mask">
+                            <rect
+                                width={viewWidth}
+                                height={viewHeight}
+                                fill="url(#schema-grid-fade)"
+                            ></rect>
+                        </mask>
+                    </defs>
+                    <rect
+                        class="schema-grid"
+                        width={viewWidth}
+                        height={viewHeight}
+                        fill="url(#schema-grid)"
+                        mask="url(#schema-grid-mask)"
+                        aria-hidden="true"
+                        data-grid="true"
+                    ></rect>
+
+                    <g class="schema__edges" aria-hidden="true">
                         <template for:each={edges} for:item="edge">
                             <path
                                 key={edge.id}
-                                class="schema-edge"
+                                class={edge.className}
                                 d={edge.d}
                                 data-edge="true"
+                            ></path>
+                        </template>
+                    </g>
+
+                    <!-- One glowing dash per connector, shown only during the intro -->
+                    <g class="schema__pulses" aria-hidden="true">
+                        <template for:each={edges} for:item="edge">
+                            <path
+                                key={edge.pulseKey}
+                                class="schema-pulse"
+                                d={edge.d}
+                                data-pulse="true"
                             ></path>
                         </template>
                     </g>
@@ -52,11 +122,39 @@
                     <g class="schema__nodes">
                         <template for:each={nodes} for:item="node">
                             <g key={node.id} transform={node.transform}>
-                                <g class={node.className} data-node="true">
+                                <g
+                                    class={node.className}
+                                    data-node="true"
+                                    data-id={node.id}
+                                    data-hub={node.hubAttr}
+                                    role="button"
+                                    tabindex="0"
+                                    aria-pressed={node.pressed}
+                                    aria-label={node.ariaLabel}
+                                    onclick={handleCardClick}
+                                    onkeydown={handleCardKeydown}
+                                >
+                                    <!-- Focus ring drawn in SVG: outlines are unreliable on SVG elements -->
+                                    <rect
+                                        class="schema-node__ring schema-node__ring_outer"
+                                        x="-6"
+                                        y="-6"
+                                        width={ringWidth}
+                                        height={node.ringHeight}
+                                        rx="13"
+                                    ></rect>
+                                    <rect
+                                        class="schema-node__ring"
+                                        x="-6"
+                                        y="-6"
+                                        width={ringWidth}
+                                        height={node.ringHeight}
+                                        rx="13"
+                                    ></rect>
                                     <rect
                                         class="schema-node__card"
                                         width={nodeWidth}
-                                        height={nodeHeight}
+                                        height={node.height}
                                         rx="8"
                                     ></rect>
                                     <rect
@@ -65,25 +163,69 @@
                                         height="4"
                                         rx="2"
                                     ></rect>
+                                    <rect
+                                        class="schema-node__chip"
+                                        x={chip.x}
+                                        y={chip.y}
+                                        width={chip.size}
+                                        height={chip.size}
+                                        rx="6"
+                                    ></rect>
+                                    <g
+                                        class="schema-node__icon"
+                                        transform={iconTransform}
+                                    >
+                                        <template
+                                            for:each={node.iconPaths}
+                                            for:item="iconPath"
+                                        >
+                                            <path
+                                                key={iconPath.key}
+                                                d={iconPath.d}
+                                            ></path>
+                                        </template>
+                                    </g>
+                                    <!-- The trailing &#32; keeps words apart in the card's text, so it matches
+                                         the spoken name (aria-label) for voice control (WCAG 2.5.3) -->
                                     <text
                                         class="schema-node__label"
                                         x="14"
-                                        y="26"
+                                        y="62"
                                     >
-                                        {node.label}
+                                        {node.label}&#32;
                                     </text>
-                                    <text
-                                        class="schema-node__sub"
-                                        x="14"
-                                        y="43"
+                                    <line
+                                        class="schema-node__rule"
+                                        x1="0"
+                                        x2={nodeWidth}
+                                        y1={ruleY}
+                                        y2={ruleY}
+                                    ></line>
+                                    <template
+                                        for:each={node.rows}
+                                        for:item="row"
                                     >
-                                        {node.sub}
-                                    </text>
-                                    <template lwc:if={node.focus}>
+                                        <text
+                                            key={row.key}
+                                            class="schema-node__field"
+                                            x="14"
+                                            y={row.y}
+                                        >
+                                            {row.label}&#32;
+                                        </text>
+                                    </template>
+                                    <template lwc:if={node.selected}>
+                                        <circle
+                                            class="schema-node__ripple"
+                                            cx={signalX}
+                                            cy={signalY}
+                                            r="6"
+                                            data-ripple="true"
+                                        ></circle>
                                         <circle
                                             class="schema-node__signal"
-                                            cx="118"
-                                            cy="20"
+                                            cx={signalX}
+                                            cy={signalY}
                                             r="6"
                                             data-focus="true"
                                         ></circle>
@@ -92,7 +234,43 @@
                             </g>
                         </template>
                     </g>
+
+                    <g class="schema__ports" aria-hidden="true">
+                        <template for:each={ports} for:item="port">
+                            <circle
+                                key={port.key}
+                                class={port.className}
+                                cx={port.cx}
+                                cy={port.cy}
+                                r="3.5"
+                                data-port="true"
+                            ></circle>
+                        </template>
+                    </g>
                 </svg>
+                <!-- Tap cue, then what the selected card's lines mean; read out politely -->
+                <p class="schema-hint" aria-live="polite" data-hint="true">
+                    <svg
+                        class="schema-hint__icon"
+                        viewBox={hintIconViewBox}
+                        width="16"
+                        height="16"
+                        aria-hidden="true"
+                    >
+                        <template for:each={hintIconPaths} for:item="iconPath">
+                            <path key={iconPath.key} d={iconPath.d}></path>
+                        </template>
+                    </svg>
+                    <template lwc:if={explored}>
+                        <strong class="schema-hint__label"
+                            >{selectedNode.label}</strong
+                        >&#32;
+                        <span>{selectedNode.summary}</span>
+                    </template>
+                    <template lwc:else>
+                        <span>{ui.diagram.hint}</span>
+                    </template>
+                </p>
             </div>
         </div>
     </section>

@@ -1,6 +1,6 @@
 import { createElement } from 'lwc';
 import App from 'lj/app';
-import { profile, proofPoints, ui } from 'lj/content';
+import { certifications, profile, recommendations, ui } from 'lj/content';
 
 const originalLinks = { ...profile.links };
 
@@ -35,6 +35,31 @@ describe('lj-app', () => {
         );
     });
 
+    // Covers the nav and the hero's buttons: a renamed section id breaks a
+    // link without any other symptom
+    it('points every in-page link at an element on the page', () => {
+        const element = render();
+
+        const hrefs = [...element.querySelectorAll('a[href^="#"]')].map((a) =>
+            a.getAttribute('href')
+        );
+        expect(hrefs).toEqual(
+            expect.arrayContaining(ui.nav.map((item) => item.href))
+        );
+        expect(hrefs.filter((href) => !element.querySelector(href))).toEqual(
+            []
+        );
+    });
+
+    // Unknown details stay out of the page rather than showing a placeholder.
+    // A plain substring check: list items run together in textContent
+    // ("ArchitectTODO"), so a word-boundary match would miss it.
+    it('shows no TODO placeholders anywhere on the page', () => {
+        const element = render();
+
+        expect(element.textContent).not.toContain('TODO');
+    });
+
     it('gives the layout skip link a focusable <main> to land on', () => {
         const element = render();
 
@@ -62,11 +87,28 @@ describe('lj-app', () => {
         );
     });
 
-    it('renders one proof point per entry', () => {
+    it('shows the recommendations right after the hero', () => {
         const element = render();
 
-        expect(element.querySelectorAll('.proof__item').length).toBe(
-            proofPoints.length
+        const section = element.querySelector('lj-hero + lj-recommendations');
+        expect(section).not.toBeNull();
+        expect(section.querySelectorAll('.recommendation').length).toBe(
+            recommendations.length
+        );
+    });
+
+    it('shows Experience, then Education, then Certifications', () => {
+        const element = render();
+
+        expect(
+            element.querySelector('lj-experience + lj-education')
+        ).not.toBeNull();
+        const section = element.querySelector(
+            'lj-education + lj-certifications'
+        );
+        expect(section).not.toBeNull();
+        expect(section.querySelectorAll('.certification').length).toBe(
+            certifications.flatMap((group) => group.items).length
         );
     });
 
@@ -94,6 +136,26 @@ describe('lj-app', () => {
         expect(contactLabels(element)).toEqual(Object.values(ui.contact.links));
         const email = element.querySelector('.contact__links a');
         expect(email.getAttribute('href')).toBe('mailto:hello@example.com');
+    });
+
+    it('states the accessibility standard and links to it', () => {
+        const element = render();
+
+        const statement = element.querySelector('.site-footer__statement');
+        expect(statement.textContent).toBe(
+            `${ui.footer.accessibilityText} ${ui.footer.accessibilityLabel}.`
+        );
+        expect(statement.querySelector('a').getAttribute('href')).toBe(
+            ui.footer.accessibilityUrl
+        );
+    });
+
+    it('shows the photo beside the call to action, loaded lazily', () => {
+        const element = render();
+
+        const photo = element.querySelector('.contact .contact__photo');
+        expect(photo.getAttribute('alt')).toBe(ui.contact.photoAlt);
+        expect(photo.getAttribute('loading')).toBe('lazy');
     });
 
     it('renders the footer copy and a link to the source', () => {

@@ -3,6 +3,7 @@ const timeline = () => {
     const tl = {
         fromTo: jest.fn(() => tl),
         to: jest.fn(() => tl),
+        set: jest.fn(() => tl),
         progress: jest.fn(() => tl),
         kill: jest.fn()
     };

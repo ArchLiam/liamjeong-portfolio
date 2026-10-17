@@ -21,6 +21,8 @@
     --lj-on-ink-muted: #8fa1b6;
     --lj-ink-rule: #2a3d57;
     --lj-on-ink-accent: #a6cef5;
+    /* The logo's cloud blue: the diagram's data pulses */
+    --lj-sky: #1b96ff;
 
     --lj-font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
     --lj-font-text: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
@@ -45,11 +47,15 @@
     --slds-c-button-radius-border: 6px;
     /*
      * SLDS draws button focus as a box-shadow: plain buttons read the component
-     * hook, brand buttons read the global one. Both match the site focus ring.
+     * hook, brand buttons the outset global, and link buttons (<a
+     * class="slds-button">) reset the component hook to the outline global.
+     * All three match the site focus ring.
      */
     --slds-c-button-shadow-focus:
         0 0 0 3px var(--lj-signal), 0 0 0 5px var(--lj-ink);
     --slds-g-shadow-outset-focus-1:
+        0 0 0 3px var(--lj-signal), 0 0 0 5px var(--lj-ink);
+    --slds-g-shadow-outline-focus-1:
         0 0 0 3px var(--lj-signal), 0 0 0 5px var(--lj-ink);
 }
 
@@ -82,6 +88,12 @@ a {
 
 a:hover {
     color: var(--lj-brand-deep);
+}
+
+/* Links inside running text are underlined: colour alone can't mark them (WCAG 1.4.1) */
+p a,
+dd a {
+    text-decoration: underline;
 }
 
 /*
@@ -139,6 +151,7 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
 }
 
 /* Block, so the focus ring wraps the logo instead of an empty inline box */
@@ -154,7 +167,16 @@ h3 {
 
 .site-header__nav {
     display: flex;
-    gap: clamp(1rem, 3vw, 2rem);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.35rem clamp(0.9rem, 3vw, 2rem);
+}
+
+/* Four links fit one line on most phones at this size; at 320px they wrap */
+@media (max-width: 30rem) {
+    .site-header__nav {
+        font-size: var(--lj-step--1);
+    }
 }
 
 .site-header__nav a {
@@ -216,6 +238,41 @@ h3 {
     font-size: var(--lj-step-0);
 }
 
+/* Outlined in ink beside the brand button; retheme through SLDS hooks */
+.hero__resume {
+    --slds-c-button-neutral-color-background: var(--lj-surface);
+    --slds-c-button-neutral-color-background-hover: var(--lj-paper);
+    --slds-c-button-neutral-color-border: var(--lj-ink);
+    --slds-c-button-neutral-color-border-hover: var(--lj-ink);
+    --slds-c-button-text-color: var(--lj-ink);
+    --slds-c-button-text-color-hover: var(--lj-ink);
+    /* Keyboard focus on a neutral button reads these two globals for its
+       background and text; scoped here so nothing else changes */
+    --slds-g-color-surface-container-1: var(--lj-surface);
+    --slds-g-color-accent-2: var(--lj-ink);
+    gap: 0.5rem;
+}
+
+/*
+ * Documented exception to "use hooks, don't override SLDS": SLDS adds a fixed
+ * 0.25rem left margin to a button that follows another, with no hook. The row
+ * already spaces buttons with gap, and the margin indents this one when the
+ * row wraps on phones.
+ */
+.hero__resume.slds-button {
+    margin-left: 0;
+}
+
+.hero__resume-icon {
+    width: 1.1em;
+    height: 1.1em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 .hero__secondary {
     font-weight: 500;
 }
@@ -229,11 +286,13 @@ h3 {
     overflow: visible;
 }
 
+/* Lines carry meaning, so they keep 3:1 against the paper (WCAG 1.4.11);
+   0.7 opacity brand blue is 3.4:1. The contrast test checks this. */
 .schema-edge {
     fill: none;
     stroke: var(--lj-brand);
     stroke-width: 1.5;
-    stroke-opacity: 0.55;
+    stroke-opacity: 0.7;
 }
 
 .schema-node__card {
@@ -253,10 +312,55 @@ h3 {
     fill: var(--lj-ink);
 }
 
-.schema-node__sub {
+/* One item per row under the header, like the fields on a Schema Builder object */
+.schema-node__field {
     font-family: var(--lj-font-text);
     font-size: 11.5px;
     fill: var(--lj-slate);
+}
+
+.schema-node__rule {
+    stroke: var(--lj-rule);
+    stroke-width: 1;
+}
+
+/* Schema Builder canvas */
+.schema-grid__dot {
+    fill: var(--lj-rule);
+}
+
+/* SLDS-style icon chip: white utility glyph on brand blue */
+.schema-node__chip {
+    fill: var(--lj-brand);
+}
+
+.schema-node__icon {
+    fill: var(--lj-surface);
+}
+
+/* Where a connector meets a card */
+.schema-port {
+    fill: var(--lj-surface);
+    stroke: var(--lj-brand);
+    stroke-width: 1.5;
+}
+
+/* Intro-only: a glowing dash that travels along a connector, then hides */
+.schema-pulse {
+    fill: none;
+    stroke: var(--lj-sky);
+    stroke-width: 3;
+    stroke-linecap: round;
+    opacity: 0;
+    filter: drop-shadow(0 0 3px var(--lj-sky));
+}
+
+/* Intro-only: the ring that spreads from the amber dot as it lands */
+.schema-node__ripple {
+    fill: none;
+    stroke: var(--lj-signal);
+    stroke-width: 2;
+    opacity: 0;
 }
 
 .schema-node_focus .schema-node__card {
@@ -269,6 +373,110 @@ h3 {
     fill: var(--lj-signal);
 }
 
+/* Amber alone is 2:1 on white; the ink ring makes the selected-state dot
+   readable at any colour vision (WCAG 1.4.11) */
+.schema-node__signal {
+    stroke: var(--lj-ink);
+    stroke-width: 1.5;
+}
+
+/* Cards are buttons; the selected one carries the amber highlight */
+.schema-node {
+    cursor: pointer;
+}
+
+/* SVG draws its own focus ring (same amber-inside, ink-outside ring as the
+   site) for keyboard focus; no browser outline for any focus, including the
+   square one Chrome draws after a click or tap */
+.schema-node:focus,
+.schema-node:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.schema-node__ring {
+    fill: none;
+    stroke: var(--lj-signal);
+    stroke-width: 3;
+    opacity: 0;
+}
+
+.schema-node__ring_outer {
+    stroke: var(--lj-ink);
+    stroke-width: 7;
+}
+
+.schema-node:focus-visible .schema-node__ring {
+    opacity: 1;
+}
+
+.schema-node:hover:not(.schema-node_focus) .schema-node__card,
+.schema-node_linked .schema-node__card {
+    stroke: var(--lj-brand);
+}
+
+/* After a selection: its connectors trace; the others step back (lines only,
+   so card text keeps its contrast) */
+.schema-edge_active {
+    stroke-opacity: 1;
+    stroke-width: 2.5;
+}
+
+/* Stepped back by weight, not by fading below 3:1 */
+.schema-edge_dim {
+    stroke-opacity: 0.7;
+    stroke-width: 1;
+}
+
+.schema-port_active {
+    fill: var(--lj-brand);
+}
+
+.schema-port_dim {
+    stroke-opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .schema-edge,
+    .schema-port,
+    .schema-node__card {
+        transition:
+            stroke 0.3s ease,
+            stroke-opacity 0.3s ease,
+            stroke-width 0.3s ease,
+            fill 0.3s ease,
+            fill-opacity 0.3s ease;
+    }
+}
+
+/* The tap cue under the diagram; it then names the selected card's links */
+.schema-hint {
+    max-width: 52ch;
+    margin: 0.75rem auto 0;
+    min-height: 1.6em;
+    font-size: var(--lj-step--1);
+    color: var(--lj-slate);
+    text-align: center;
+}
+
+.schema-hint__label {
+    color: var(--lj-ink);
+    font-weight: 600;
+}
+
+/* Inline, so it stays at the start of the sentence when the sentence wraps */
+.schema-hint__icon {
+    display: inline-block;
+    vertical-align: -0.2em;
+    margin-right: 0.35rem;
+    fill: var(--lj-brand);
+}
+
+/* Without JavaScript nothing responds to a tap, so don't offer one */
+html:not(.js) .schema-hint {
+    display: none;
+}
+
 /*
  * Intro start state. Only applies when JS is running and the visitor has not
  * asked for reduced motion; GSAP animates these to visible. The fallback
@@ -276,8 +484,11 @@ h3 {
  */
 @media (prefers-reduced-motion: no-preference) {
     .js [data-intro],
+    .js [data-grid],
     .js [data-node],
     .js [data-edge],
+    .js [data-port],
+    .js [data-hint],
     .js [data-focus] {
         opacity: 0;
         animation: intro-fallback 0s linear 4.5s forwards;
@@ -379,48 +590,279 @@ h3 {
     margin: 0 0 2.5rem;
 }
 
-/* Proof points: three columns of plain text, no cards */
+/* Recommendations: a spotlight on a dark band, one quote at a time */
 
-.proof {
-    background: var(--lj-surface);
+.recommendations {
+    background: var(--lj-ink);
+    color: var(--lj-paper);
+    border-top: 0;
 }
 
-.proof__grid {
-    display: grid;
-    gap: 2.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+.recommendations__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: 2rem;
 }
 
-.proof__item {
-    border-left: 3px solid var(--lj-brand);
-    padding-left: 1.25rem;
+.recommendations__title {
+    color: var(--lj-paper);
+    margin-bottom: 0.5rem;
 }
 
-.proof__title {
-    font-size: var(--lj-step-1);
-    margin-bottom: 0.6rem;
-}
-
-.proof__body {
-    color: var(--lj-slate);
+.recommendations__lede {
     margin: 0;
-    max-width: 38ch;
+    color: var(--lj-on-ink);
 }
 
-/* Selected work: expandable rows */
+.recommendations__count {
+    margin: 0;
+    font-family: var(--lj-font-display);
+    font-weight: 700;
+    font-size: var(--lj-step-3);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--lj-on-ink-accent);
+}
 
-.work__list {
+/* With JS, every quote sits in one grid cell: the section keeps the height of
+   the longest quote, so switching never moves the page */
+.js .recommendations__panels {
+    display: grid;
+}
+
+.js .recommendations__panel {
+    grid-area: 1 / 1;
+}
+
+.js .recommendations__panel:not(.recommendations__panel_active) {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(0.5rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .js .recommendations__panel {
+        transition:
+            opacity 0.4s ease,
+            transform 0.4s ease,
+            visibility 0s linear 0.4s;
+    }
+
+    .js .recommendations__panel_active {
+        transition:
+            opacity 0.4s ease,
+            transform 0.4s ease,
+            visibility 0s;
+    }
+}
+
+/* Without JS: every quote, stacked, and no switcher */
+html:not(.js) .recommendations__panel + .recommendations__panel {
+    margin-top: 3rem;
+}
+
+html:not(.js) .recommendations__picker,
+html:not(.js) .recommendations__step {
+    display: none;
+}
+
+.recommendation {
+    margin: 0;
+    max-width: 58rem;
+}
+
+.recommendation__quote {
+    margin: 0 0 2rem;
+}
+
+/* Decorative opening mark; empty alt text so screen readers skip it */
+.recommendation__quote::before {
+    content: '\201C';
+    content: '\201C' / '';
+    display: block;
+    height: 3.25rem;
+    font-family: var(--lj-font-display);
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--lj-on-ink-accent);
+}
+
+.recommendation__quote p {
+    margin: 0;
+    font-family: var(--lj-font-display);
+    font-weight: 500;
+    font-size: clamp(1.3rem, 1rem + 1.25vw, 2.1rem);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--lj-paper);
+}
+
+.recommendation__by {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.recommendation__avatar {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.recommendation__who {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+}
+
+.recommendation__name {
+    font-weight: 600;
+    color: var(--lj-paper);
+}
+
+.recommendation__title,
+.recommendation__meta {
+    font-size: var(--lj-step--1);
+    color: var(--lj-on-ink-muted);
+}
+
+.recommendations__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2rem;
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--lj-ink-rule);
+}
+
+.recommendations__picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+}
+
+.recommendations__tab {
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    line-height: 0;
+    cursor: pointer;
+}
+
+/* Focus ring sits outside the selected ring, not on top of it */
+.recommendations__tab:focus-visible {
+    outline-offset: 6px;
+}
+
+.recommendations__tab-photo {
+    display: block;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    font-size: var(--lj-step--1);
+}
+
+/* After .recommendations__tab-photo, so the grid centring wins */
+.recommendation__avatar_initials,
+.recommendations__tab-photo_initials {
+    display: grid;
+    place-items: center;
+    background: var(--lj-on-ink-accent);
+    color: var(--lj-ink);
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Unselected photos rest in greyscale; the selected one is in colour */
+img.recommendations__tab-photo {
+    filter: grayscale(1);
+}
+
+.recommendations__tab:hover img.recommendations__tab-photo,
+.recommendations__tab_active img.recommendations__tab-photo {
+    filter: none;
+}
+
+/* Selected: a ring in the light accent (9.6:1 on ink), so the state never
+   rests on colour alone */
+.recommendations__tab_active {
+    box-shadow:
+        0 0 0 3px var(--lj-ink),
+        0 0 0 5px var(--lj-on-ink-accent);
+}
+
+.recommendations__step {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.recommendations__arrow {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--lj-on-ink-muted);
+    border-radius: 50%;
+    background: none;
+    color: var(--lj-paper);
+    cursor: pointer;
+}
+
+.recommendations__arrow:hover {
+    background: var(--lj-ink-rule);
+}
+
+.recommendations__arrow svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.recommendations__more {
+    color: var(--lj-on-ink-accent);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.recommendations__more:hover {
+    color: var(--lj-paper);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .recommendations__tab-photo {
+        transition: filter 0.3s ease;
+    }
+}
+
+/* Projects: rows that fold open (native <details>) */
+
+.projects__list {
     list-style: none;
     margin: 0;
     padding: 0;
     border-top: 1px solid var(--lj-ink);
+    /* The body and meta line up with the title text, after the + marker */
+    --project-indent: calc(var(--lj-step-2) * 1.25);
 }
 
-.work__item {
+.projects__item {
     border-bottom: 1px solid var(--lj-rule);
 }
 
-.case__summary {
+.project__toggle {
     list-style: none;
     cursor: pointer;
     display: flex;
@@ -431,17 +873,17 @@ h3 {
     padding: 1.5rem 0;
 }
 
-.case__summary::-webkit-details-marker {
+.project__toggle::-webkit-details-marker {
     display: none;
 }
 
-.case__heading {
+.project__heading {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.case__title {
+.project__title {
     font-family: var(--lj-font-display);
     font-weight: 700;
     font-size: var(--lj-step-2);
@@ -449,34 +891,39 @@ h3 {
     letter-spacing: -0.015em;
 }
 
-.case__title::before {
+.project__title::before {
     content: '+';
     /* Empty alt text after the slash: screen readers skip it instead of saying "plus" */
     content: '+' / '';
     display: inline-block;
     width: 1.25em;
     color: var(--lj-brand);
-    transition: transform 0.2s ease;
 }
 
-.case[open] .case__title::before {
+.project[open] .project__title::before {
     transform: rotate(45deg);
 }
 
-.case__meta {
-    color: var(--lj-slate);
-    padding-left: 1.25em;
-    font-size: var(--lj-step--1);
+@media (prefers-reduced-motion: no-preference) {
+    .project__title::before {
+        transition: transform 0.2s ease;
+    }
 }
 
-.case__tags {
+.project__meta {
+    padding-left: var(--project-indent);
+    font-size: var(--lj-step--1);
+    color: var(--lj-slate);
+}
+
+.project__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
 }
 
-.case__tag {
-    --slds-c-badge-color-background: var(--lj-paper);
+.project__tag {
+    --slds-c-badge-color-background: var(--lj-surface);
     --slds-c-badge-text-color: var(--lj-ink);
     --slds-c-badge-color-border: var(--lj-rule);
 }
@@ -486,28 +933,45 @@ h3 {
  * badge's weight and sibling margin with no hook. The row spaces tags with gap,
  * so the margin would double it.
  */
-.case__tag.slds-badge {
+.project__tag.slds-badge {
     font-weight: 500;
     margin: 0;
 }
 
-.case__body {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: 1.5rem 2.5rem;
-    margin: 0;
-    padding: 0 0 2rem 1.6rem;
+.project__body {
+    max-width: var(--lj-measure);
+    padding: 0 0 2rem var(--project-indent);
 }
 
-.case__field dt {
-    font-weight: 600;
-    color: var(--lj-ink);
-    margin-bottom: 0.3rem;
+.project__description {
+    margin: 0;
 }
 
-.case__field dd {
-    margin: 0;
+.project__highlights {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+}
+
+.project__highlights li {
+    position: relative;
+    padding-left: 1.25rem;
     color: var(--lj-slate);
+}
+
+.project__highlights li + li {
+    margin-top: 0.6rem;
+}
+
+/* A small brand square, like the diagram's ports */
+.project__highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0.15rem;
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    background: var(--lj-brand);
 }
 
 /* Experience timeline: a real sequence, newest first */
@@ -520,12 +984,6 @@ h3 {
     row-gap: 2rem;
 }
 
-.experience__credentials {
-    color: var(--lj-slate);
-    max-width: 30ch;
-    margin: 0 0 1rem;
-}
-
 .timeline {
     list-style: none;
     margin: 0;
@@ -533,11 +991,14 @@ h3 {
     border-left: 2px solid var(--lj-rule);
 }
 
+/* Phones: logo, then the years, company, title, and detail beside it.
+   From 40rem the years move into their own column on the left. Every piece
+   has a fixed column, so a role without years or a detail keeps its place. */
 .timeline__item {
     position: relative;
     display: grid;
-    grid-template-columns: 9.5rem 1fr;
-    column-gap: 1.5rem;
+    grid-template-columns: 48px 1fr;
+    column-gap: 1rem;
     padding: 0 0 1.75rem;
 }
 
@@ -557,19 +1018,339 @@ h3 {
     background: var(--lj-brand);
 }
 
+.timeline__logo {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+    display: block;
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--lj-rule);
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.timeline__logo_initials {
+    display: grid;
+    place-items: center;
+    background: var(--lj-paper);
+    color: var(--lj-ink);
+    font-family: var(--lj-font-display);
+    font-weight: 700;
+    font-size: var(--lj-step--1);
+}
+
+.timeline__period,
+.timeline__org,
+.timeline__title,
+.timeline__detail {
+    grid-column: 2;
+}
+
 .timeline__period {
-    grid-row: span 2;
     color: var(--lj-slate);
     font-size: var(--lj-step--1);
-    padding-top: 0.2em;
 }
 
 .timeline__org {
     font-weight: 600;
 }
 
-.timeline__role {
+.timeline__detail {
     color: var(--lj-slate);
+    font-size: var(--lj-step--1);
+}
+
+@media (min-width: 40rem) {
+    .timeline__item {
+        grid-template-columns: 8.5rem 48px 1fr;
+        column-gap: 1.25rem;
+    }
+
+    .timeline__period {
+        grid-column: 1;
+        grid-row: 1 / span 3;
+        padding-top: 0.2em;
+    }
+
+    .timeline__logo {
+        grid-column: 2;
+        grid-row: 1 / span 3;
+    }
+
+    .timeline__org,
+    .timeline__title,
+    .timeline__detail {
+        grid-column: 3;
+    }
+}
+
+/* Education: laid out like Experience; a school, then its degrees */
+
+.education {
+    background: var(--lj-surface);
+}
+
+.education .section__inner {
+    row-gap: 2rem;
+}
+
+.school + .school {
+    margin-top: 2.5rem;
+}
+
+.school__name {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 0 1.5rem;
+    font-size: var(--lj-step-1);
+}
+
+.school__logo {
+    display: block;
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+}
+
+.school__degrees {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Years in their own column from 40rem, as in the Experience timeline */
+.degree {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--lj-rule);
+}
+
+.degree__period,
+.degree__grade,
+.degree__activities {
+    font-size: var(--lj-step--1);
+    color: var(--lj-slate);
+}
+
+.degree__field {
+    font-weight: 600;
+}
+
+.degree__honors {
+    font-size: var(--lj-step--1);
+    font-weight: 600;
+    color: var(--lj-brand);
+}
+
+@media (min-width: 40rem) {
+    .degree {
+        grid-template-columns: 8.5rem 1fr;
+        column-gap: 1.25rem;
+    }
+
+    .degree__period {
+        grid-column: 1;
+        grid-row: 1 / span 5;
+        padding-top: 0.2em;
+    }
+
+    .degree__field,
+    .degree__name,
+    .degree__grade,
+    .degree__honors,
+    .degree__activities {
+        grid-column: 2;
+    }
+}
+
+/* Certifications: one Schema Builder-style object card per issuer */
+
+/* Trailhead badges: a dark panel so the coloured badges stand out */
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 3rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
+    border-radius: 12px;
+    background: var(--lj-ink);
+    color: var(--lj-paper);
+}
+
+.badges__title {
+    margin: 0;
+    font-size: var(--lj-step-1);
+    color: var(--lj-paper);
+}
+
+.badges__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* One box size for every badge, so the names line up when the badges stack */
+.badge__image {
+    display: block;
+    flex: none;
+    width: 120px;
+    height: 80px;
+    object-fit: contain;
+}
+
+/* Smaller on narrow phones so the names keep room beside them */
+@media (max-width: 30rem) {
+    .badge__image {
+        width: 90px;
+        height: 60px;
+    }
+}
+
+.badge__text {
+    display: flex;
+    flex-direction: column;
+    max-width: 22rem;
+    line-height: 1.4;
+    text-wrap: balance;
+}
+
+.badge__name {
+    font-family: var(--lj-font-display);
+    font-weight: 700;
+    font-size: var(--lj-step-1);
+    color: var(--lj-paper);
+}
+
+.badge__detail {
+    font-size: var(--lj-step--1);
+    color: var(--lj-on-ink);
+}
+
+.badges__profile {
+    color: var(--lj-on-ink-accent);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.badges__profile:hover {
+    color: var(--lj-paper);
+}
+
+.certifications__groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.certifications__group {
+    background: var(--lj-surface);
+    border: 1px solid var(--lj-rule);
+    border-top: 4px solid var(--lj-brand);
+    border-radius: 10px;
+}
+
+.certifications__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--lj-rule);
+}
+
+.certifications__issuer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    font-size: var(--lj-step-1);
+}
+
+/* Height fixed, width from the logo's own proportions */
+.certifications__logo {
+    display: block;
+    flex: none;
+    height: 32px;
+    width: auto;
+}
+
+.certifications__count {
+    min-width: 2rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: var(--lj-paper);
+    color: var(--lj-slate);
+    font-size: var(--lj-step--1);
+    font-weight: 600;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.certifications__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Name and ID on the left, date on the right, like a field and its type */
+.certification {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        'name date'
+        'id date';
+    column-gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.certification + .certification {
+    border-top: 1px solid var(--lj-rule);
+}
+
+.certification__name {
+    grid-area: name;
+    font-weight: 600;
+    color: var(--lj-ink);
+}
+
+.certification__name a {
+    text-decoration: underline;
+}
+
+.certification__id {
+    grid-area: id;
+    font-size: var(--lj-step--1);
+    color: var(--lj-slate);
+    font-variant-numeric: tabular-nums;
+}
+
+.certification__date {
+    grid-area: date;
+    align-self: start;
+    padding-top: 0.15em;
+    font-size: var(--lj-step--1);
+    color: var(--lj-slate);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.certifications__more {
+    margin: 1.5rem 0 0;
 }
 
 /* Contact */
@@ -578,6 +1359,28 @@ h3 {
     background: var(--lj-ink);
     color: var(--lj-paper);
     border-top: 0;
+}
+
+/* Photo beside the call to action; it stacks above the text on narrow screens */
+.contact__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem 3rem;
+}
+
+.contact__photo {
+    display: block;
+    flex: none;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 3px solid var(--lj-ink-rule);
+    object-fit: cover;
+}
+
+.contact__text {
+    flex: 1 1 20rem;
 }
 
 .contact__title {
@@ -647,22 +1450,10 @@ h3 {
     margin: 0;
 }
 
-.site-footer a {
-    color: var(--lj-on-ink);
+.site-footer__statement {
+    margin-top: 0.35rem;
 }
 
-/* ---------- Small screens ---------- */
-
-@media (max-width: 40em) {
-    .timeline__item {
-        grid-template-columns: 1fr;
-    }
-
-    .timeline__period {
-        grid-row: auto;
-    }
-
-    .case__body {
-        padding-left: 0;
-    }
+.site-footer a {
+    color: var(--lj-on-ink);
 }

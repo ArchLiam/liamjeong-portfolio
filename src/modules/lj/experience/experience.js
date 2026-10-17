@@ -1,19 +1,16 @@
 import { LightningElement } from 'lwc';
-import { experience, credentials, ui } from 'lj/content';
+import { experience, ui } from 'lj/content';
 
 /**
- * @description Experience: credentials summary, an optional link to verify
- * them, and the career timeline, newest first.
+ * @description Experience: the career timeline, newest first. Each role shows
+ * its years, the company's logo (or an initials tile), the company, the
+ * title, and what the work was. Certifications have their own section
+ * (lj-certifications).
  * @author Liam Jeong
  */
 export default class Experience extends LightningElement {
     static renderMode = 'light';
 
     roles = experience;
-    credentials = credentials;
     ui = ui;
-
-    get hasVerifyUrl() {
-        return Boolean(this.credentials.verifyUrl);
-    }
 }

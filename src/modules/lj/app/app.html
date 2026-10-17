@@ -22,38 +22,43 @@
     <main id="main" tabindex="-1">
         <lj-hero></lj-hero>
 
-        <section class="section proof" aria-label={ui.proofLabel}>
-            <div class="section__inner proof__grid">
-                <template for:each={proofPoints} for:item="point">
-                    <div key={point.id} class="proof__item">
-                        <h2 class="proof__title">{point.title}</h2>
-                        <p class="proof__body">{point.body}</p>
-                    </div>
-                </template>
-            </div>
-        </section>
+        <lj-recommendations></lj-recommendations>
 
-        <lj-work></lj-work>
+        <lj-projects></lj-projects>
         <lj-experience></lj-experience>
+        <lj-education></lj-education>
+        <lj-certifications></lj-certifications>
 
         <section
             id="contact"
             class="section contact"
             aria-labelledby="contact-title"
         >
-            <div class="section__inner">
-                <h2 id="contact-title" class="contact__title">
-                    {profile.availability}
-                </h2>
-                <p class="contact__body">{ui.contact.body}</p>
-                <!-- role="list": Safari drops list semantics when list-style is none -->
-                <ul class="contact__links" role="list">
-                    <template for:each={contactLinks} for:item="link">
-                        <li key={link.key}>
-                            <a href={link.href}>{link.label}</a>
-                        </li>
-                    </template>
-                </ul>
+            <div class="section__inner contact__inner">
+                <!-- Below the fold, so it loads lazily -->
+                <img
+                    class="contact__photo"
+                    src="/assets/img/liam-jeong.webp"
+                    alt={ui.contact.photoAlt}
+                    width="160"
+                    height="160"
+                    loading="lazy"
+                    decoding="async"
+                />
+                <div class="contact__text">
+                    <h2 id="contact-title" class="contact__title">
+                        {profile.availability}
+                    </h2>
+                    <p class="contact__body">{ui.contact.body}</p>
+                    <!-- role="list": Safari drops list semantics when list-style is none -->
+                    <ul class="contact__links" role="list">
+                        <template for:each={contactLinks} for:item="link">
+                            <li key={link.key}>
+                                <a href={link.href}>{link.label}</a>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
             </div>
         </section>
     </main>
@@ -61,10 +66,18 @@
     <footer class="site-footer">
         <div class="section__inner site-footer__inner">
             <lj-lockup variant="dark" show-domain></lj-lockup>
-            <p class="site-footer__legal">
-                {ui.footer.text}&#32;
-                <a href={ui.footer.sourceUrl}>{ui.footer.sourceLabel}</a>.
-            </p>
+            <div class="site-footer__notes">
+                <p class="site-footer__legal">
+                    {ui.footer.text}&#32;
+                    <a href={ui.footer.sourceUrl}>{ui.footer.sourceLabel}</a>.
+                </p>
+                <p class="site-footer__statement">
+                    {ui.footer.accessibilityText}&#32;
+                    <a href={ui.footer.accessibilityUrl}
+                        >{ui.footer.accessibilityLabel}</a
+                    >.
+                </p>
+            </div>
         </div>
     </footer>
 </template>

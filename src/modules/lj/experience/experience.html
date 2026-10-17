@@ -9,12 +9,6 @@
                 <h2 id="experience-title" class="section__title">
                     {ui.experience.title}
                 </h2>
-                <p class="experience__credentials">{credentials.summary}</p>
-                <template lwc:if={hasVerifyUrl}>
-                    <a class="experience__verify" href={credentials.verifyUrl}>
-                        {ui.experience.verifyLink}
-                    </a>
-                </template>
             </div>
             <!-- role="list": Safari drops list semantics when list-style is none -->
             <ol
@@ -22,10 +16,38 @@
                 role="list"
             >
                 <template for:each={roles} for:item="item">
+                    <!-- Each piece ends in &#32; so it reads as separate
+                         words; a role without known years shows none -->
                     <li key={item.id} class="timeline__item">
-                        <span class="timeline__period">{item.period}</span>
-                        <span class="timeline__org">{item.org}</span>
-                        <span class="timeline__role">{item.role}</span>
+                        <template lwc:if={item.period}>
+                            <span class="timeline__period"
+                                >{item.period}&#32;</span
+                            >
+                        </template>
+                        <!-- Decorative: the company's name sits right beside it -->
+                        <template lwc:if={item.logo}>
+                            <img
+                                class="timeline__logo"
+                                src={item.logo}
+                                alt=""
+                                width="48"
+                                height="48"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </template>
+                        <template lwc:else>
+                            <span
+                                class="timeline__logo timeline__logo_initials"
+                                aria-hidden="true"
+                                >{item.initials}</span
+                            >
+                        </template>
+                        <span class="timeline__org">{item.org}&#32;</span>
+                        <span class="timeline__title">{item.title}&#32;</span>
+                        <template lwc:if={item.detail}>
+                            <span class="timeline__detail">{item.detail}</span>
+                        </template>
                     </li>
                 </template>
             </ol>
