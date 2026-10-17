@@ -101,8 +101,20 @@ const browser = await puppeteer.launch({
 
 const problems = [];
 
+// The audit never needs analytics: block Umami so CI doesn't depend on its
+// servers. (data-domains already keeps it from sending anything on localhost.)
+async function blockAnalytics(page) {
+    await page.setRequestInterception(true);
+    page.on('request', (request) =>
+        /\.umami\.is\//.test(request.url())
+            ? request.abort()
+            : request.continue()
+    );
+}
+
 async function audit({ name, width, selectCard = false, nextQuote = false }) {
     const page = await browser.newPage();
+    await blockAnalytics(page);
     await page.setViewport({ width, height: 900 });
     // Reduced motion: everything is visible at once, with no intro to wait for
     await page.emulateMediaFeatures([
@@ -181,6 +193,7 @@ async function audit({ name, width, selectCard = false, nextQuote = false }) {
  */
 async function focusNotObscured({ name, width, height }) {
     const page = await browser.newPage();
+    await blockAnalytics(page);
     await page.setViewport({ width, height });
     await page.emulateMediaFeatures([
         { name: 'prefers-reduced-motion', value: 'reduce' }

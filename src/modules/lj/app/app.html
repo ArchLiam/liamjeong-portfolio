@@ -54,7 +54,12 @@
                     <ul class="contact__links" role="list">
                         <template for:each={contactLinks} for:item="link">
                             <li key={link.key}>
-                                <a href={link.href}>{link.label}</a>
+                                <a
+                                    href={link.href}
+                                    data-track={link.track}
+                                    data-track-from={link.trackFrom}
+                                    >{link.label}</a
+                                >
                             </li>
                         </template>
                     </ul>
@@ -69,7 +74,9 @@
             <div class="site-footer__notes">
                 <p class="site-footer__legal">
                     {ui.footer.text}&#32;
-                    <a href={ui.footer.sourceUrl}>{ui.footer.sourceLabel}</a>.
+                    <a href={ui.footer.sourceUrl} data-track={analytics.source}
+                        >{ui.footer.sourceLabel}</a
+                    >.
                 </p>
                 <p class="site-footer__statement">
                     {ui.footer.accessibilityText}&#32;
@@ -77,6 +84,7 @@
                         >{ui.footer.accessibilityLabel}</a
                     >.
                 </p>
+                <p class="site-footer__statement">{ui.footer.privacyText}</p>
             </div>
         </div>
     </footer>

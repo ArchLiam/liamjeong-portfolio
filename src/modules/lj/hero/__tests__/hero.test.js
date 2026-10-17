@@ -3,7 +3,7 @@ import { join } from 'path';
 import { createElement } from 'lwc';
 import Hero from 'lj/hero';
 import { gsap } from 'gsap';
-import { profile, schema, ui } from 'lj/content';
+import { analytics, profile, schema, ui } from 'lj/content';
 import { icons } from 'lj/icons';
 
 // Each card's box as rendered: position from its wrapper's translate(), size from its card rect
@@ -324,6 +324,30 @@ describe('lj-hero', () => {
             schema.edges
                 .filter(([from, to]) => from === id || to === id)
                 .map(([from, to]) => (from === id ? to : from));
+
+        it('counts each selection, by click or by key, under the card label', () => {
+            mockMatchMedia(true);
+            window.umami = { track: jest.fn() };
+            try {
+                const element = render();
+
+                tap(cardFor(element, 'omni'));
+                cardFor(element, 'data360').dispatchEvent(
+                    new KeyboardEvent('keydown', {
+                        key: 'Enter',
+                        bubbles: true,
+                        cancelable: true
+                    })
+                );
+
+                expect(window.umami.track.mock.calls).toEqual([
+                    [analytics.diagramCard, { card: labelOf('omni') }],
+                    [analytics.diagramCard, { card: labelOf('data360') }]
+                ]);
+            } finally {
+                delete window.umami;
+            }
+        });
 
         it("keeps each card's visible words inside its spoken name (WCAG 2.5.3)", () => {
             mockMatchMedia(true);

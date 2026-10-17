@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import { projects, ui } from 'lj/content';
+import { analytics, projects, ui } from 'lj/content';
 
 /**
  * @description Projects as rows that fold open. Each is a native <details>
@@ -13,6 +13,7 @@ export default class Projects extends LightningElement {
     static renderMode = 'light';
 
     ui = ui;
+    analytics = analytics;
 
     items = projects.map((project) => ({
         ...project,

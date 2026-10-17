@@ -1,6 +1,13 @@
 import { createElement } from 'lwc';
 import App from 'lj/app';
-import { certifications, profile, recommendations, ui } from 'lj/content';
+import {
+    analytics,
+    certifications,
+    profile,
+    projects,
+    recommendations,
+    ui
+} from 'lj/content';
 
 const originalLinks = { ...profile.links };
 
@@ -110,6 +117,108 @@ describe('lj-app', () => {
         expect(section.querySelectorAll('.certification').length).toBe(
             certifications.flatMap((group) => group.items).length
         );
+    });
+
+    describe('analytics', () => {
+        const tracked = (element) =>
+            [...element.querySelectorAll('[data-track]')].map((node) =>
+                [
+                    node.getAttribute('data-track'),
+                    node.getAttribute('data-track-from')
+                ]
+                    .filter(Boolean)
+                    .join(' from ')
+            );
+        // Stops jsdom "navigating" after the click; runs after lj-app's listener
+        const stopNavigation = (event) => event.preventDefault();
+
+        beforeEach(() => {
+            window.umami = { track: jest.fn() };
+            window.addEventListener('click', stopNavigation);
+        });
+
+        afterEach(() => {
+            delete window.umami;
+            window.removeEventListener('click', stopNavigation);
+        });
+
+        it('names only events listed in content', () => {
+            const element = render();
+            const known = new Set(
+                Object.values(analytics).flatMap((value) => {
+                    // Strings, plus the contact map's values
+                    return typeof value === 'string'
+                        ? [value]
+                        : Object.values(value);
+                })
+            );
+
+            const unknown = [...element.querySelectorAll('[data-track]')]
+                .map((node) => node.getAttribute('data-track'))
+                .filter((name) => !known.has(name));
+            expect(unknown).toEqual([]);
+        });
+
+        it('tracks the buttons and links that matter, and nothing else', () => {
+            const element = render();
+
+            expect(tracked(element).sort()).toEqual(
+                [
+                    analytics.heroProjects,
+                    `${analytics.resume} from hero`,
+                    analytics.heroContact,
+                    ...projects.map(() => analytics.openProject),
+                    analytics.linkedinRecommendations,
+                    analytics.trailblazer,
+                    analytics.linkedinCertifications,
+                    analytics.contact.email,
+                    analytics.contact.linkedin,
+                    analytics.contact.github,
+                    `${analytics.contact.resume} from contact`,
+                    analytics.source
+                ].sort()
+            );
+        });
+
+        it('sends a click to Umami through the page root, without changing it', () => {
+            const element = render();
+            const resume = element.querySelector('.hero__resume');
+            const event = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true
+            });
+
+            resume.dispatchEvent(event);
+
+            expect(window.umami.track).toHaveBeenCalledWith(analytics.resume, {
+                from: 'hero'
+            });
+            // Only the test's own listener, after lj-app's, cancels it
+            expect(event.defaultPrevented).toBe(true);
+            expect(window.umami.track).toHaveBeenCalledTimes(1);
+        });
+
+        it('counts which project was opened', () => {
+            const element = render();
+            const summary = element.querySelector('details.project summary');
+
+            summary.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+            expect(window.umami.track).toHaveBeenCalledWith(
+                analytics.openProject,
+                { project: projects[0].title }
+            );
+        });
+
+        it('says in the footer that visits are counted without cookies', () => {
+            const element = render();
+
+            expect(
+                [...element.querySelectorAll('.site-footer p')].map((p) =>
+                    p.textContent.trim()
+                )
+            ).toContain(ui.footer.privacyText);
+        });
     });
 
     it('shows only the contact links that have a URL', () => {

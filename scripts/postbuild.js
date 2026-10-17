@@ -7,7 +7,8 @@
  * 2. Rewrites script URLs from LWR's encoded form (lwc%2Fv%2F9_5_1) to the decoded
  *    paths the files are written at (lwc/v/9_5_1). LWR's own fix for this is a
  *    Netlify _redirects file and a serve.json, and Vercel reads neither. Static
- *    hosts that keep %2F encoded would otherwise 404 every script.
+ *    hosts that keep %2F encoded would otherwise 404 every script. Scripts from
+ *    other origins (the Umami tracker) are left as they are.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
@@ -29,9 +30,15 @@ if (!/<lj-app\b[^>]*>\s*<(?!\/)/.test(html)) {
 }
 
 let rewritten = 0;
+let external = 0;
 const output = html.replace(
     /(<script\b[^>]*\bsrc=")([^"]+)"/g,
     (match, start, src) => {
+        // Another origin's script isn't in ./site; its host must be in the CSP
+        if (/^(https?:)?\/\//.test(src)) {
+            external += 1;
+            return match;
+        }
         const decoded = decodeURIComponent(src);
         if (!existsSync(`${SITE_DIR}${decoded}`)) {
             fail(`script ${src} has no file at ${SITE_DIR}${decoded}`);
@@ -45,5 +52,5 @@ const output = html.replace(
 
 writeFileSync(PAGE, output);
 console.log(
-    `postbuild: SSR output present; ${rewritten} script URL(s) decoded.`
+    `postbuild: SSR output present; ${rewritten} script URL(s) decoded, ${external} external left as is.`
 );

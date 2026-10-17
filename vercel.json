@@ -24,7 +24,7 @@
                 { "key": "X-Frame-Options", "value": "DENY" },
                 {
                     "key": "Content-Security-Policy-Report-Only",
-                    "value": "default-src 'self'; script-src 'self' 'sha256-0DgmgJXv8dGUtQrkjyz1eU8BO3ohEgfFmHPQRW6Oqnw=' 'sha256-BA3vwgprhyvk97K8KKf++MXDGX2nRi5C2eEw3+Jy8k4='; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+                    "value": "default-src 'self'; script-src 'self' https://cloud.umami.is 'sha256-0DgmgJXv8dGUtQrkjyz1eU8BO3ohEgfFmHPQRW6Oqnw=' 'sha256-BA3vwgprhyvk97K8KKf++MXDGX2nRi5C2eEw3+Jy8k4='; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://gateway.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
                 }
             ]
         },
