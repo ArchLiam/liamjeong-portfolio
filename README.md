@@ -55,7 +55,7 @@ The site is built to [WCAG 2.2](https://www.w3.org/TR/WCAG22/) Level AA, and CI 
 
 - **Component tests** run axe-core on each rendered component.
 - **A contrast budget** reads the colour tokens from `site.css` and fails if text drops below 4.5:1 or a meaningful graphic below 3:1.
-- **A page-level audit** (`scripts/a11y-check.js`) runs axe-core's WCAG 2.0, 2.1, and 2.2 A/AA rules on the built page in headless Chrome at desktop width, with a diagram card selected, with another recommendation shown, at 200% zoom, and at 320px, and checks that nothing scrolls sideways.
+- **A page-level audit** (`scripts/a11y-check.js`) runs axe-core's WCAG 2.0, 2.1, and 2.2 A/AA rules on the built page in headless Chrome at desktop width, with a diagram card selected, with another recommendation shown, at 200% zoom, and at 320px, checks that nothing scrolls sideways, and tabs through the page both ways to check that the sticky header never hides keyboard focus (WCAG 2.4.11).
 
 The hero diagram is keyboard and screen reader operable: each card is a button with its items in its name, selection is announced, and motion respects `prefers-reduced-motion` and finishes within five seconds.
 

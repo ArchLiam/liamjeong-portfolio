@@ -61,8 +61,24 @@
 
 /* ---------- Base ---------- */
 
+/*
+ * The header sticks to the top, so anything scrolled to (a #section link, or
+ * the next element reached with Tab) stops below it rather than under it.
+ * WCAG 2.4.11 requires focus never be fully hidden; a11y-check verifies.
+ * The offset is the header's height less 1px, so a #section jump tucks the
+ * section's top border under the header's own rule. Measured: 65px with the
+ * nav on one line, 74px when it wraps to two (phones up to about 414px).
+ * Change these with the header's size.
+ */
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 64px;
+}
+
+@media (max-width: 26rem) {
+    html {
+        scroll-padding-top: 73px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -144,10 +160,20 @@ h3 {
 
 /* ---------- Header ---------- */
 
+/* Stays at the top while the page scrolls. Below the skip link (z-index 10),
+   which must show over it when focused. */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--lj-paper);
+    border-bottom: 1px solid var(--lj-rule);
+}
+
 .site-header__inner {
     max-width: var(--lj-max-width);
     margin: 0 auto;
-    padding: 1.25rem var(--lj-gutter);
+    padding: 0.75rem var(--lj-gutter);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -172,7 +198,7 @@ h3 {
     gap: 0.35rem clamp(0.9rem, 3vw, 2rem);
 }
 
-/* Four links fit one line on most phones at this size; at 320px they wrap */
+/* Smaller on phones; the five links still wrap to two lines there */
 @media (max-width: 30rem) {
     .site-header__nav {
         font-size: var(--lj-step--1);
